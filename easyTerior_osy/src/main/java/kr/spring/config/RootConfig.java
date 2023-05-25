@@ -37,6 +37,7 @@ public class RootConfig {
 		hikariConfig.setJdbcUrl(env.getProperty("jdbc.url"));
 		hikariConfig.setUsername(env.getProperty("jdbc.user"));
 		hikariConfig.setPassword(env.getProperty("jdbc.password"));
+		// src/main/resource/persistence-mysql.properties 에 정보 있음.
 		
 		HikariDataSource myDataSource = new HikariDataSource(hikariConfig);
 		return myDataSource;

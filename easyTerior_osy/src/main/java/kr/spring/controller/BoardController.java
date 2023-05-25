@@ -20,13 +20,6 @@ import kr.spring.mapper.BoardMapper;
 @Controller
 public class BoardController { // 서버 기능들
 	
-	// 	main - 요청 URL /
-	@RequestMapping("/")
-	public String main() {
-		// return "main";
-		return "index";
-	}
-	
 	// 게시판 이동
 	@RequestMapping("/boardMain.do")
 	public String boardMain() {

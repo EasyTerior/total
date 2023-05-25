@@ -35,7 +35,10 @@ position: relative;
 <main class="main">
 	<jsp:include page="../common/header.jsp"></jsp:include>
 	<jsp:include page="../common/submenu.jsp"></jsp:include>
-	<section class="fixed-top container-fluid overflow-auto" style="height:100%;margin:137px 0 0;padding:56px 0 0 100px;">
+	<section class="fixed-top container-fluid overflow-auto h-100" style="margin:137px 0 56px 0;padding:0 0 56px 100px;">
+		<h1 class="text-center mb-3">스타일 분석하기</h1>
+		<!-- 실질 컨텐츠 위치 -->
+		<div class="container-fluid" style="min-height:100vh;margin-bottom:200px;">
 	</section>
 	<jsp:include page="../common/footer.jsp"></jsp:include>
 </main>
