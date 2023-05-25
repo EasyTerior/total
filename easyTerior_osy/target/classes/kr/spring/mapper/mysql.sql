@@ -1,21 +1,22 @@
 -- 회원 테이블 생성
 CREATE TABLE member(
 	memIdx INT,
-	memID VARCHAR(20) NOT NULL,
-	memPassword VARCHAR(68) NOT NULL,
-	memName VARCHAR(20) NOT NULL,
-	memAge INT,
-	memGender VARCHAR(20),
+	memID VARCHAR(50) NOT NULL,
+	memPassword VARCHAR(50) NOT NULL,
+	memName VARCHAR(50) NOT NULL,
+	memNickname VARCHAR(50),
+	memPhone VARCHAR(50),
 	memEmail VARCHAR(150),
-	memProfile VARCHAR(50), -- photo가 아니라 경로 저장용. 
+	memAddress VARCHAR(150),
+	memProfile VARCHAR(150), -- photo가 아니라 경로 저장용. 
 	PRIMARY KEY(memID) --  기본키
 );
 
 -- DROP TABLE member;
 SELECT * FROM member;
 
--- admin 계정 추가
-INSERT INTO member(memID, memPassword, memName, memAge, memGender, memEmail, memProfile)
+-- admin 계정 추가?
+INSERT INTO member(memIdx, memID, memPassword, memName, memNickname, memPhone, memEmail, memAddress, memProfile)
 VALUES('admin', '1234', '관리자', 20, '여자', 'admin@admin.com', '');
 
 DELETE FROM member;
