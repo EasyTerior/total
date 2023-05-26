@@ -2,7 +2,7 @@
 CREATE TABLE member(
 	memIdx INT,
 	memID VARCHAR(50) NOT NULL,
-	memPassword VARCHAR(50) NOT NULL,
+	memPassword VARCHAR(150) NOT NULL,
 	memName VARCHAR(50) NOT NULL,
 	memNickname VARCHAR(50),
 	memPhone VARCHAR(50),
@@ -12,11 +12,11 @@ CREATE TABLE member(
 	PRIMARY KEY(memID) --  기본키
 );
 
--- DROP TABLE member;
+DROP TABLE member;
 SELECT * FROM member;
 
 -- admin 계정 추가?
-SET @nextIdx = (SELECT IFNULL(MAX(memIdx) + 1, 1) FROM member); -- 자동으로 idx 추가하면서 생성.
+SET @nextIdx = (SELECT IFNULL(MAX(memIdx) + 1, 1) FROM member);  -- 자동으로 idx 추가하면서 생성.
 INSERT INTO member(memIdx, memID, memPassword, memName, memNickname, memPhone, memEmail, memAddress, memProfile)
 VALUES (@nextIdx, 'admin', '1234', '관리자', 'admin관리자', '010-0000-0000', 'admin@admin.com', '주소', '');
 -- memID가 key니까 중복 아니면 생성됨.
