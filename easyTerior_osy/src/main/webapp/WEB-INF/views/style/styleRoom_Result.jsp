@@ -49,59 +49,68 @@ body, main, section {
 		<jsp:include page="../common/submenu.jsp"></jsp:include>
 		<section class="fixed-top container-fluid overflow-auto h-100"
 			style="margin: 137px 0 56px 0; padding: 0 0 56px 100px;">
-			<h1 class="text-center mb-3" style="margin-top: 30px;">방 스타일 분석</h1>
+			<h1 class="text-center mb-3" style="margin-top: 30px;">스타일 분석 결과</h1>
 			<!-- 실질 컨텐츠 위치 -->
 			<div class="container-fluid"
 				style="min-height: 100vh; margin-bottom: 200px;">
-				<div class="row m-auto" style="width: 80%">
-					<div class="col-sm-6">
-						<div
-							class="card border-0 d-flex justify-content-center align-items-center">
-							<div class="card-body">
-								<h5 class="text-center fw-bold">예시 이미지</h5>
-							</div>
-							<img class="card-img-bottom"
-								src="/resources/images/common/StyleRoom_image_1.jpg"
-								style="width: 500px; height: 300px;" alt="myImage">
-						</div>
-					</div>
 
-					<div class="col-sm-6">
-						<div
-							class="card border-0 d-flex justify-content-center align-items-center">
-							<div class="card-body">
-								<h5 class="text-center fw-bold">이미지 가이드라인</h5>
-							</div>
-							<h7 class="text-center fw-bold">예시이미지처럼 방 전체가 다 보이도록 찍은 사진을
-							업로드해주세요.</h7>
-							<br>
-							<h7 class="text-center fw-bold">다음은 적절하지 않은 사진 예시 입니다. 소품만
-							보이는 사진은 인식이 어려워요!</h7>
+				<br>
+				<h5 style="text-align: center;">당신의 인테리어는?</h5>
+				<h3 style="text-align: center; font-weight: bold;">스칸디나비아 스타일</h3>
 
 
-							<div class="row" style="margin-top: 20px">
-								<div class="col-sm-6">
-									<img src="/resources/images/common/StyleRoom_image_2.png"
-										style="width: 200px; height: 200px;" alt="myImage">
-									<h4 style="text-align: center; font-weight: bold;">(x)</h4>
-								</div>
-								<div class="col-sm-6">
-									<img src="/resources/images/common/StyleRoom_image_3.png"
-										style="width: 200px; height: 200px;" alt="myImage">
-									<h4 style="text-align: center; font-weight: bold;">(x)</h4>
-								</div>
-							</div>
-						</div>
-
-					</div>
-
+				<!-- 이미지를 감싸는 div 태그 -->
+				<div style="width: 100%;"
+					class="d-flex justify-content-center align-items-center">
+					<img src="resources/images/common/styleRoom_Result_image_1.png"
+						alt="Interior Image" style="max-width: 60%;">
+				</div>
+				<!-- 버튼 -->
+				<div class="d-flex justify-content-center align-items-center"
+					style="margin-top: 10px;">
+					<button class="btn btn-primary">스타일 저장하기</button>
 				</div>
 
-				<div class="d-flex justify-content-center" style="margin-top: 20px;">
-					<a href="styleRoom_Result.do">
-						<div class="btn btn-primary btn-lg" style="width=50px;background-color:#40a1d7;border:none";>사진 업로드</div>
-					</a>
+				<div class="container mt-3">
+					<div class="row">
+						<div
+							class="col mx-10 my-3 d-flex align-items-center justify-content-center">
+							<h6>
+								스칸디나비아 스타일은 스칸디나비아 지역의 디자인 철학으로, 간결하고 심플한 디자인 원칙을 따릅니다.<br>
+								밝고 넓은 공간을 선호하며, 자연 소재인 목재와 플랜트를 활용하여 자연스러운 분위기를 조성합니다.<br>
+								중립적인 색상과 자연광을 즐기며, 기능성과 실용성을 중시하여 실용적이면서도 아름다운 공간을 만들어냅니다.
+							</h6>
+						</div>
+					</div>
 				</div>
+				
+				<div class="text-center">
+					<br>
+					<h3 class="fw-bold">이 스타일과 관련된 인테리어 소품을 추천해드릴게요!</h3>
+				</div>
+
+
+				<div class="container">
+					<div class="row justify-content-center">
+						<div class="col-3">
+							<img src="resources/images/common/styleRoom_Result_image_2.png"
+								class="img-fluid my-3 mx-2" alt="Image 1">
+						</div>
+						<div class="col-3">
+							<img src="resources/images/common/styleRoom_Result_image_3.png"
+								class="img-fluid my-3 mx-2" alt="Image 2">
+						</div>
+						<div class="col-3">
+							<img src="resources/images/common/styleRoom_Result_image_4.png"
+								class="img-fluid my-3 mx-2" alt="Image 3">
+						</div>
+						<div class="col-3">
+							<img src="resources/images/common/styleRoom_Result_image_5.png"
+								class="img-fluid my-3 mx-2" alt="Image 4">
+						</div>
+					</div>
+				</div>
+
 
 			</div>
 		</section>
