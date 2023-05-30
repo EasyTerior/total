@@ -24,44 +24,49 @@
 <title>loginForm.do</title>
 </head>
 <body>
-<main class="main">
+<section class="main">
 	<jsp:include page="../common/header.jsp"></jsp:include>
-	<jsp:include page="../common/submenu.jsp"></jsp:include>
-	<section class="fixed-top container-fluid overflow-auto" style="height:100%;margin:137px 0 0;padding:56px 0 0 100px;">
-	<div class="container-fluid" style="min-height:100vh;margin-bottom: 200px;">
-		<div class="container-fluid">
-			<div class="mb-5"><h2 class="text-center">회원가입</h2></div>
-			<div class="container m-auto" style="width:70%;">
-				<form action="login.do" method="POST" class="form container needs-validation">
+	<div class="container-fluid">
+		<h2>Spring MVC 03 - loginForm.do</h2>
+		<div class="card ">
+			<div class="card-header">
+				<h3 class="text-center">로그인</h3>
+			</div>
+			<div class="card-body">
+				<form action="${ contextPath }/login.do" method="POST" class="form container">
 					<!-- CSRF token -->
 					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
-					<div class="row mb-3" style="width:600px;margin:0 auto;">
-					    <label for="memID" class="col-sm-2 col-form-label">아이디</label>
-					    <div class="col-sm-7">
-					        <input type="text" placeholder="아이디를 입력해주세요." pattern="^[a-zA-Z0-9]+" maxlength=20 class="form-control" id="memID" name="memID" />
-					    </div>
-					</div>
-					<div class="row mb-3 position-relative" style="width:600px;margin:0 auto;">
-					    <label for="memPassword1" class="col-sm-2 col-form-label">비밀번호</label>
-					    <div class="col-sm-7">
-					        <input type="password" placeholder="비밀번호를 입력해주세요." name="memPassword" id="memPassword" class="form-control" />
-					    </div>
-					    <div class="valid-tooltip"></div>
-					</div>
-					<div class="row mb-3">
-					    <div class="m-auto offset-sm-2 text-center">
-					        <button type="submit" class="btn btn-primary">로그인하기</button>
-					        <button type="reset" class="btn btn-warning">취소하기</button>
-					    </div>
-					</div>
+					<table class="table table-bordered text-center">
+						<tbody>
+							<tr>
+								<th class="align-middle" style="width:150px;"><label for="memID">사용자 ID</label></th>
+								<td class="align-middle">
+									<input type="text" name=memID id="memID" class="form-control" maxlength=20 placeholder="아이디를 20자 미만으로 입력하세요" required="required" />
+								</td>
+							</tr>
+							<tr>
+								<th class="align-middle" style="width:150px;"><label for="memPassword">사용자 비밀번호</label></th>
+								<td class="align-middle">
+									<input type="password" name=memPassword id="memPassword" class="form-control" maxlength=20 placeholder="비밀번호를 입력해주세요" required="required" />
+								</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="2" class="pull-right">
+									<p id="passMessage" class="text-center fw-bold"></p>
+									<button type="submit" class="btn btn-sm btn-primary">로그인</button>
+									<button type="reset" class="btn btn-sm btn-warning">취소하기</button>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
 				</form>
 			</div>
+			<div class="card-footer">Panel footer</div>
 		</div>
 	</div>
-	</section>
-	<jsp:include page="../common/footer.jsp"></jsp:include>
-</main>
-
+</section>
 <!-- The Modal -->
 <div class="modal fade" id="myModal"><!-- animation : fade -->
   <div class="modal-dialog">

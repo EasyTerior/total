@@ -58,10 +58,11 @@ public class MemberController {
 			// 암호화 하기
 			String encyPw = pwEncoder.encode(mem.getMemPassword());
 			mem.setMemPassword(encyPw);
-			
 			// 실질 DB에 비밀번호 넣기
 			cnt = memberMapper.join(mem);
 		} catch (Exception e) {
+			System.out.println("Exception e : "+e);
+			System.out.println(mem);
 			// 회원 가입 실패
 			rttr.addFlashAttribute("msgType", "실패 메세지");
 			rttr.addFlashAttribute("msg", "회원가입에 실패하셨습니다. 다시 시도해주세요.");
@@ -88,7 +89,8 @@ public class MemberController {
 	@RequestMapping("/login.do")
 	public String login(Member mem, HttpSession session, RedirectAttributes rttr) {
 		Member memInfo = memberMapper.getMember(mem.getMemID());
-		boolean isMatches = pwEncoder.matches(memInfo.getMemPassword(), mem.getMemPassword());
+		// pwEncoder.matches(사용자가 입력한 비밀번호, 저장된 암호화된 비밀번호);
+		boolean isMatches = pwEncoder.matches(mem.getMemPassword(), memInfo.getMemPassword());
 		System.out.println(memInfo.getMemPassword());
 		System.out.println(mem.getMemPassword());
 		System.out.println(isMatches);

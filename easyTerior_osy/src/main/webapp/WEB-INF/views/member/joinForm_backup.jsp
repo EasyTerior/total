@@ -8,6 +8,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"><!-- icons -->
+<link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
+rel="stylesheet" /><!-- icons -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
 <script type="text/javascript">
 	function registerCheck(){
@@ -47,15 +50,42 @@
 		let memPassword1 = $("#memPassword1").val();
 		let memPassword2 = $("#memPassword2").val();
 		if (memPassword1 != memPassword2){
-			$("#passMessage").text("비밀번호가 서로 일치하지 않습니다. 비밀번호를 확인해주세요.");
-			$("#passMessage").css("color","red");
+			$(".valid-tooltip").text("비밀번호가 서로 동일하지 않습니다.");
+			$(".valid-tooltip").css("color","red");
 		}else{
-			$("#passMessage").text("비밀번호가 서로 일치합니다.");
-			$("#passMessage").css("color","green");
+			$(".valid-tooltip").text("비밀번호가 서로 일치합니다.");
+			$(".valid-tooltip").css("color","green");
 			$("#memPassword").val(memPassword1);
 		}
 		
 	}
+	// 주소 채우기
+	function addressFill(){
+		let add1 = $("#address").val();
+		let add2 = $("#detailAddress").val();
+		let add3 = $("#extraAddress").val();
+		let fullAddress = add1+ " " + add2 + " " + add3;
+		$("#memAddress").val(fullAddress);
+		
+	}
+	
+	// invalid show
+	function validation(){
+		// Fetch all the forms we want to apply custom Bootstrap validation styles to
+		var forms = document.querySelectorAll('.needs-validation');
+
+		// Loop over them and prevent submission
+		Array.prototype.slice.call(forms).forEach(function (form) {
+		    form.addEventListener('submit', function (event) {
+		        if (!form.checkValidity()) {
+		        event.preventDefault();
+		        event.stopPropagation();
+		    }
+		    form.classList.add('was-validated');
+		    }, false);
+		});
+	}
+	
 	$(document).ready(function(){
 		// 회원가입 실패 후 modal 표시
 		if(${ not empty msgType}){
@@ -74,16 +104,94 @@
 	<jsp:include page="../common/header.jsp"></jsp:include>
 	<jsp:include page="../common/submenu.jsp"></jsp:include>
 	<section class="fixed-top container-fluid overflow-auto" style="height:100%;margin:137px 0 0;padding:56px 0 0 100px;">
-	<div class="container-fluid">
-		<div class="card ">
-			<div class="card-header"><h2 class="text-center">회원가입</h2></div>
-			<div class="card-body">
+	<div class="container-fluid" style="min-height:100vh;margin-bottom: 200px;">
+		<div class="container-fluid">
+			<div class="mb-5"><h2 class="text-center">회원가입</h2></div>
+			<div class="container m-auto" style="width:70%;">
 				<form action="join.do" method="POST" class="form container needs-validation">
 					<!-- CSRF token -->
 					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
 					<!-- memPassword1와 memPassword2가 일치해야만이 memPassword가 될 것 -->
 					<input type="hidden" id="memPassword" name="memPassword" />
-					
+					<div class="row mb-3">
+					    <label for="memID" class="col-sm-2 col-form-label">아이디</label>
+					    <div class="col-sm-7">
+					        <input type="text" placeholder="공백 없이 한글, 영어, 숫자로 20자 미만의 아이디만 가능합니다." pattern="^[ㄱ-ㅎ가-힣a-zA-Z0-9]+" maxlength=20 class="form-control" id="memID" name="memID" />
+					    </div>
+					    <div class="col-sm-3">
+					        <button type="button" onclick="registerCheck()" data-bs-toggle="modal" class="btn btn-sm btn-primary" >중복확인</button>
+					    </div>
+					</div>
+					<div class="row mb-3 position-relative">
+					    <label for="memPassword1" class="col-sm-2 col-form-label">비밀번호</label>
+					    <div class="col-sm-10">
+					        <input type="password" placeholder="비밀번호 현재 패턴 적용 안 함" name="memPassword1" id="memPassword1" class="form-control" onkeyup="passwordCheck()" />
+					    </div>
+					    <div class="valid-tooltip"></div>
+					</div>
+					<div class="row mb-3 position-relative">
+					    <label for="memPassword2" class="col-sm-2 col-form-label">비밀번호 확인</label>
+					    <div class="col-sm-10">
+					        <input type="password" placeholder="비밀번호 현재 패턴 적용 안 함" name="memPassword2" id="memPassword2" class="form-control" onkeyup="passwordCheck()" />
+					        <div class="valid-tooltip"></div>
+					    </div>
+					</div>
+					<div class="row mb-3">
+					    <label for="memName" class="col-sm-2 col-form-label">이름</label>
+					    <div class="col-sm-10">
+					        <input type="text" placeholder="홍길동" pattern="^[ㄱ-ㅎ가-힣a-zA-Z\s]+" class="form-control" id="memName" name="memName" required />
+					    </div>
+					</div>
+					<div class="row mb-3">
+					    <label for="memNickname" class="col-sm-2 col-form-label">닉네임</label>
+					    <div class="col-sm-10">
+					        <input type="text" placeholder="공백 없이 한글, 영어, 숫자로 10자 미만의 닉네임만 가능합니다." pattern="^[ㄱ-ㅎ가-힣a-zA-Z0-9]+" maxlength=10 class="form-control" id="memNickname" name="memNickname" required />
+					    </div>
+					</div>
+					<div class="row mb-3">
+					    <label for="memPhone" class="col-sm-2 col-form-label">휴대폰 번호</label>
+					    <div class="col-sm-10">
+					        <input type="text" placeholder="000-0000-0000" pattern="^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$" class="form-control" id="memPhone" name="memPhone" required />
+					    </div>
+					</div>
+					<div class="row mb-3">
+					    <label for="memEmail" class="col-sm-2 col-form-label">이메일</label>
+					    <div class="col-sm-10">
+					        <input type="email" placeholder="email@email.com" pattern="^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$" class="form-control" id="memEmail" name="memEmail" required />
+					    </div>
+					</div>
+					<div class="row mb-3">
+					    <label for="memAddress" class="col-sm-2 col-form-label">주소</label>
+					    <input type="hidden" name="memAddress" id="memAddress" />
+					    <div class="col-sm-10">
+					    	<div class="row mb-2">
+					    		<div class="col-auto">
+					    			<button type="button" class="btn btn-info align-top" onclick="addressFullFill()">우편번호 찾기</button>
+					    		</div>
+					    		<div class="col-auto">
+					    			<input type="text" id="postcode" class="form-control"  placeholder="우편번호" />
+					    		</div>
+					    	</div>
+					    	<div class="row">
+					    		<div class="col-auto">
+					    			<input type="text" onchange="addressFill()" id="address" class="form-control" style="width: 300px;" placeholder="주소" required />
+					    		</div>
+					    		<div class="col-auto">
+					    			<input type="text" onchange="addressFill()" id="detailAddress" class="form-control" placeholder="상세주소" />
+					    		</div>
+					    		<div class="col-auto">
+					    			<input type="text" style="
+    width: 150px;
+" id="extraAddress" class="form-control" placeholder="참고항목" />
+					    		</div>
+					    	</div>
+					    </div>
+					</div>
+					<div class="row mb-3">
+					    <div class="col-sm-10 offset-sm-2 text-center">
+					        <button type="submit" class="btn btn-primary">가입하기</button>
+					    </div>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -91,94 +199,7 @@
 	</section>
 	<jsp:include page="../common/footer.jsp"></jsp:include>
 </main>
-<section class="main">
-	<jsp:include page="../common/header.jsp"></jsp:include>
-	<div class="container-fluid">
-		<h2>Spring MVC 03 - joinForm.do</h2>
-		<div class="card ">
-			<div class="card-header"><h3 class="text-center">회원가입</h3></div>
-			<div class="card-body">
-				<form action="join.do" method="POST" class="form container">
-					<!-- CSRF token -->
-					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
-					<!-- memPassword1와 memPassword2가 일치해야만이 memPassword가 될 것 -->
-					<input type="hidden" id="memPassword" name="memPassword" />
-					<table class="table table-bordered text-center">
-						<tbody>
-							<tr>
-								<th class="align-middle" style="width:150px;"><label for="memID">사용자 ID</label></th>
-								<td class="align-middle">
-									<input type="text" name=memID id="memID" class="form-control" maxlength=20 placeholder="아이디를 20자 미만으로 입력하세요" required="required" />
-								</td>
-								<td class="align-middle" style="width:120px;">
-									<button type="button" onclick="registerCheck()" data-bs-toggle="modal" class="btn btn-sm btn-primary" >중복확인</button>
-								</td>
-							</tr>
-							<tr>
-								<th class="align-middle" style="width:150px;"><label for="memPassword1">사용자 비밀번호</label></th>
-								<td colspan="2" class="align-middle">
-									<input type="password" onkeyup="passwordCheck()" name=memPassword1 id="memPassword1" class="form-control"  maxlength=20 placeholder="비밀번호는 8~20자 미만으로 입력 가능하며 숫자와 소문자와 대문자의 조합으로 만들어주세요" required="required" />
-								</td>
-							</tr>
-							<tr>
-								<th class="align-middle" style="width:150px;"><label for="memPassword2">사용자 비밀번호 확인</label></th>
-								<td colspan="2" class="align-middle">
-									<input type="password" onkeyup="passwordCheck()" name=memPassword2 id="memPassword2" class="form-control" maxlength=20 placeholder="비밀번호는 위와 동일해야 합니다." required="required" />
-								</td>
-							</tr>
-							<tr>
-								<th class="align-middle" style="width:150px;"><label for="memName">사용자 이름</label></th>
-								<td colspan="2" class="align-middle">
-									<input type="text" name=memName id="memName" class="form-control" maxlength=20  placeholder="이름을 입력하세요." required="required" />
-								</td>
-							</tr>
-							<tr>
-								<th class="align-middle" style="width:150px;"><label for="memAge">사용자 나이</label></th>
-								<td colspan="2" class="align-middle">
-									<input type="number" name=memAge id="memAge" class="form-control" placeholder="나이를 입력하세요." required="required" />
-								</td>
-							</tr>
-							<tr>
-								<th class="align-middle" style="width:150px;"><label for="memGender">성별</label></th>
-								<td colspan="2" class="align-middle">
-									<div class="form-group text-center m-auto">
-										<div class="btn-group gender-group" data-toggle="buttons" role="group">
-											<label for="male" class="btn btn-sm btn-primary active">
-												<input type="radio" name="memGender" id="male" class="btn-check" value="남자" checked="checked" autocomplete="off" />
-												<span>남자</span>
-											</label>
-											
-											<label for="female" class="btn btn-sm btn-primary">
-												<input type="radio" name="memGender" id="female" class="btn-check" value="여자" autocomplete="off" />
-												<span>여자</span>
-											</label>
-										</div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<th class="align-middle" style="width:150px;"><label for="memEmail">사용자 이메일</label></th>
-								<td colspan="2" class="align-middle">
-									<input type="email" name=memEmail id="memEmail" class="form-control" maxlength=150 placeholder="이메일을 입력하세요." pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required="required" />
-								</td>
-							</tr>
-						</tbody>
-						<tfoot>
-							<tr>
-								<td colspan="3" class="pull-right">
-									<p id="passMessage" class="text-center fw-bold"></p>
-									<button type="submit" class="btn btn-sm btn-primary">가입하기</button>
-									<button type="reset" class="btn btn-sm btn-warning">취소하기</button>
-								</td>
-							</tr>
-						</tfoot>
-					</table>
-				</form>
-			</div>
-			<div class="card-footer">Panel footer</div>
-		</div>
-	</div>
-</section>
+
 <!-- The Modal -->
 <div class="modal fade" id="myModal"><!-- animation : fade -->
   <div class="modal-dialog">
@@ -203,5 +224,55 @@
     </div>
   </div>
 </div>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function addressFullFill() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("extraAddress").value = extraAddr;
+                
+                } else {
+                    document.getElementById("extraAddress").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('postcode').value = data.zonecode;
+                document.getElementById("address").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("detailAddress").focus();
+            }
+        }).open();
+    }
+</script>
 </body>
 </html>
