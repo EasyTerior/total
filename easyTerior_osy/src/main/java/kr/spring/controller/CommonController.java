@@ -23,5 +23,10 @@ public class CommonController {
 		public String colorChange() {
 			return "style/colorChange";
 		}
-	
+		
+	// 스타일 분석 결과 페이지 이동
+		@RequestMapping("/styleRoom_Result.do")
+		public String styleRoom_Result() {
+			return "style/styleRoom_Result";
+		}
 }
