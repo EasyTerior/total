@@ -20,26 +20,19 @@
 	
 	<update id="update" parameterType="kr.spring.entity.Member">
 		UPDATE member 
-		SET memName=#{memName}, memNickname=#{memNickname}, memPhone=#{memPhone}, memEmail=#{memEmail}, memAddress=#{memAddress}, memProfile=#{memProfile}
-		WHERE memID = #{memID}
-	</update>
-	
-	<update id="updatePW" parameterType="kr.spring.entity.Member">
-		UPDATE member 
-		SET memPassword=#{memPassword}
-		WHERE memID = #{memID}
+		SET memPassword=#{memPassword}, memName=#{memName}, memNickname=#{memNickname}, memPhone=#{memPhone}, memEmail=#{memEmail}, memAddress=#{memAddress}, memProfile=#{memProfile}
+		WHERE memID = #{memID};
 	</update>
 
 	<update id="imageUpload" parameterType="kr.spring.entity.Member">
 		UPDATE member
 		SET memProfile=#{memProfile}
-		WHERE memID = #{memID}
+		WHERE memID = #{memID};
 	</update>
 
 	<select id="getMember" parameterType="String" resultType="kr.spring.entity.Member">
 		SELECT * FROM member
 		WHERE memID = #{memID}
 	</select>
-
 
 </mapper>

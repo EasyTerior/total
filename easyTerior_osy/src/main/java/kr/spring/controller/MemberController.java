@@ -154,48 +154,6 @@ public class MemberController {
 	}	
 	// updateMem = session.setAttribute("memResult", memResult);
 
-	
-	// 비밀번호 변경 form으로 이동 기능 : 요청 URL - /updatePWForm.do
-		@RequestMapping("/updatePWForm.do")
-		public String updatePWForm() {
-			return "member/updatePWForm";
-		}
-		
-		@RequestMapping("/updatePW.do")
-		public String updatePW(Member mem, HttpSession session, RedirectAttributes rttr) {
-			mem.setMemProfile("");
-			// 암호화 하기
-			String encyPw = pwEncoder.encode(mem.getMemPassword());
-			mem.setMemPassword(encyPw);
-			// 실질 DB에 비밀번호 넣어서 update하기
-			int cnt = memberMapper.updatePW(mem);
-			if (cnt == 1) { // SQL 실행문 1문이 잘 됨. == 비밀번호수정 성공
-				session.setAttribute("memResult", mem);
-				rttr.addFlashAttribute("msgType", "성공 메세지");
-				rttr.addFlashAttribute("msg", "성공적으로 비밀번호가 변경되었습니다.");
-				return "redirect:/";
-			}else {
-				// 비밀번호 수정 실패
-				rttr.addFlashAttribute("msgType", "실패 메세지");
-				rttr.addFlashAttribute("msg", "비밀번호 변경에 실패하셨습니다. 다시 시도해주세요.");
-				return "redirect:/updateForm.do"; // member/updateForm
-			} 
-		}	
-		// updateMem = session.setAttribute("memResult", memResult);
-
-		
-			
-		// 저장한 이미지 확인 form으로 이동 기능 : 요청 URL - /updateImg.do
-		@RequestMapping("/updateImg.do")
-		public String updateImg() {
-			return "member/updateImg";
-		}		
-
-		// 취향 결과 확인 form으로 이동 기능 : 요청 URL - /updateResult.do
-		@RequestMapping("/updateResult.do")
-		public String updateResult() {
-			return "member/updateResult";
-		}		
 
 	// 프로필 이미지 등록으로 이동 : 요청 URL - /imageForm.do
 	@RequestMapping("/imageForm.do")
