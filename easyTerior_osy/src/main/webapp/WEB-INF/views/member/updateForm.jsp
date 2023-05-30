@@ -47,6 +47,31 @@
 		$(".updateList .on").addClass("fw-bold");
 	});
 	
+	// 비동기 회원정보 수정하기
+	$(".updateList li").on("click", function(){
+		alert("updateList li click");
+        var liIndex = $(this).index() + 1;
+        var formContainerId = "formContainer" + liIndex;
+	     // 모든 formContainer 숨기기
+        $(".formContainer").hide();
+        
+        // 클릭된 li에 대한 처리
+        $(this).addClass("on").siblings().removeClass("on");
+        $("#" + formContainerId).show();
+        
+        $.ajax({
+            url: "loadUpdateForm.do",
+            type: "GET",
+            data: { formIndex: liIndex },
+            success: function(data){
+                $("#" + formContainerId).html(data);
+            },
+            error: function(){
+                alert("폼을 가져오는 데 실패했습니다.");
+            }
+        });
+    });
+	
 </script>
 <title>updateForm.do</title>
 </head>
@@ -64,89 +89,25 @@
 					<img class="img d-block m-auto" style="width:150px;" src="${ contextPath }/resources/images/common/person.png" alt="profile default">
 					<p class="mt-3 mb-4 text-center fs-4 fw-bold ">${memResult.memName}님 환영합니다.</p>
 					<ul class="updateList m-auto" style="width:200px;">
-						<li class="mb-3 ps-2 on"><a href="updateForm.do" class="link-dark text-decoration-none">개인정보 수정</a></li>
-						<li class="mb-3 ps-2"><a href="updatePWForm.do" class="link-dark text-decoration-none">비밀번호 변경</a></li>
-						<li class="mb-3 ps-2"><a href="updateImg.do" class="link-dark text-decoration-none">저장한 이미지 확인</a></li>
-						<li class="mb-3 ps-2"><a href="updateResult.do" class="link-dark text-decoration-none">취향 결과 확인</a></li>
+						<li class="mb-3 ps-2 on"><a href="" class="link-dark text-decoration-none">개인정보 수정</a></li>
+						<li class="mb-3 ps-2"><a href="" class="link-dark text-decoration-none">비밀번호 변경</a></li>
+						<li class="mb-3 ps-2"><a href="" class="link-dark text-decoration-none">저장한 이미지 확인</a></li>
+						<li class="mb-3 ps-2"><a href="" class="link-dark text-decoration-none">취향 결과 확인</a></li>
 					</ul>
 				</div>
 				<div class="col-7 bg-secondary">
-					<div class="container m-auto" style="width:70%;">
-						<form action="update.do" method="POST" class="form container needs-validation mt-4">
-						
-						<legend class="mb-4 fs-4 text-center">개인 정보 수정</legend>
-							<!-- CSRF token -->
-							<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
-							<input type="hidden" id="memID" name="memID" value="${ memResult.memID }" />
-							<input type="hidden" id="memID" name="memName" value="${ memResult.memName }" />
-							<input type="hidden" id="memPassword" name="memPassword" /> <!-- memPassword1와 memPassword2가 일치해야만이 memPassword가 될 것 -->
-							<div class="row mb-3 position-relative">
-							    <label for="memPassword1" class="col-sm-2 col-form-label">비밀번호</label>
-							    <div class="col-sm-10">
-							        <input type="password" placeholder="비밀번호 현재 패턴 적용 안 함" name="memPassword1" id="memPassword1" class="form-control" onkeyup="passwordCheck()" />
-							    </div>
-							    <div class="valid-tooltip"></div>
-							</div>
-							<div class="row mb-3 position-relative">
-							    <label for="memPassword2" class="col-sm-2 col-form-label">비밀번호 확인</label>
-							    <div class="col-sm-10">
-							        <input type="password" placeholder="비밀번호 현재 패턴 적용 안 함" name="memPassword2" id="memPassword2" class="form-control" onkeyup="passwordCheck()" />
-							        <div class="valid-tooltip"></div>
-							    </div>
-							</div>
-							<div class="row mb-3">
-								<label for="memNickname" class="col-sm-2 col-form-label">닉네임</label>
-								<div class="col-sm-10">
-									<input type="text" class="form-control" id="memNickname" name="memNickname" value="${ memResult.memNickname }" placeholder="공백 없이 한글, 영어, 숫자로 10자 미만의 닉네임만 가능합니다." pattern="^[ㄱ-ㅎ가-힣a-zA-Z0-9]+" maxlength=10 required />
-								</div>
-							</div>
-							<div class="row mb-3">
-								<label for="memPhone" class="col-sm-2 col-form-label">휴대폰 번호</label>
-								<div class="col-sm-10">
-									<input type="text" value="${ memResult.memPhone }" class="form-control" id="memPhone" name="memPhone" placeholder="000-0000-0000" pattern="^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$"  required />
-								</div>
-							</div>
-							<div class="row mb-3">
-								<label for="memEmail" class="col-sm-2 col-form-label">이메일</label>
-								<div class="col-sm-10">
-									<input type="email" value="${ memResult.memEmail }"  class="form-control" id="memEmail" name="memEmail" placeholder="email@email.com" pattern="^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$" required />
-								</div>
-							</div>
-							<div class="row mb-3">
-								<label for="memAddress" class="col-sm-2 col-form-label">주소</label>
-								<input type="hidden" name="memAddress" id="memAddress" />
-								<div class="col-sm-10">
-									<div class="row mb-2">
-										<div class="col-auto">
-											<button type="button" class="btn btn-info align-top" onclick="addressFullFill()">우편번호 찾기</button>
-										</div>
-										<div class="col-auto">
-											<input type="text" id="postcode" class="form-control"  placeholder="우편번호" />
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-auto">
-											<input type="text" onchange="addressFill()" id="address" class="form-control" style="width:300px;" placeholder="주소" required />
-										</div>
-										<div class="col-auto">
-											<input type="text" onchange="addressFill()" id="detailAddress" class="form-control" placeholder="상세주소" />
-										</div>
-										<div class="col-auto">
-											<input type="text" style="
-					width: 150px;
-					" id="extraAddress" class="form-control" placeholder="참고항목" />
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row mb-3">
-								<div class="col-sm-10 offset-sm-2 text-center">
-									<button type="submit" class="btn btn-primary">수정하기</button>
-									<button type="reset" class="btn btn-warning">취소하기</button>
-								</div>
-							</div>
-						</form>
+					<div id="formContainer1" class="container m-auto" style="width:70%;">
+						formContainer1
 					</div>
+					<div id="formContainer2" class="container m-auto" style="width:70%;">
+						formContainer2
+					</div>
+				    <div id="formContainer3" class="container m-auto" style="width:70%;">
+				    	formContainer3
+				    </div>
+				    <div id="formContainer4" class="container m-auto" style="width:70%;">
+				    	formContainer4
+				    </div>
 				</div>
 			</div>
 		</div>

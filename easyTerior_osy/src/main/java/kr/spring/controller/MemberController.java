@@ -88,30 +88,40 @@ public class MemberController {
 	// 로그인 기능 요청 URL - /login.do
 	@RequestMapping("/login.do")
 	public String login(Member mem, HttpSession session, RedirectAttributes rttr) {
-		Member memInfo = memberMapper.getMember(mem.getMemID());
-		// pwEncoder.matches(사용자가 입력한 비밀번호, 저장된 암호화된 비밀번호);
-		boolean isMatches = pwEncoder.matches(mem.getMemPassword(), memInfo.getMemPassword());
-		System.out.println(memInfo.getMemPassword());
-		System.out.println(mem.getMemPassword());
-		System.out.println(isMatches);
+	    try {
+	        Member memInfo = memberMapper.getMember(mem.getMemID());
+	        System.out.println("login : memInfo: " + memInfo);
+	        if (memInfo == null) {
+	            // login failure
+	            rttr.addFlashAttribute("msgType", "실패 메세지");
+	            rttr.addFlashAttribute("msg", "로그인에 실패하셨습니다. 아이디와 비밀번호를 확인해주세요.");
+	            return "redirect:/loginForm.do";
+	        }
 
-		// Member memResult = memberMapper.login(mem); // 로그인 성공 시 해당 존재하는 로그인 된 회원의 정보 받기
-		// 회원 없으면 null 반환 -> 로그인 실패시 nullPointerException
-		// System.out.println(m.toString()); // .toString() -> 500 NullPointerException
-		// if (memResult == null) {
-		if ((!isMatches) || (memInfo == null)) {
-			// login failure
-			rttr.addFlashAttribute("msgType", "실패 메세지");
-			rttr.addFlashAttribute("msg", "로그인에 실패하셨습니다. 아이디와 비밀번호를 확인해주세요.");
-			return "redirect:/loginForm.do";
-		} else {
-			// login success
-			rttr.addFlashAttribute("msgType", "성공 메세지");
-			rttr.addFlashAttribute("msg", "로그인에 성공하셨습니다. 안녕하세요. " + memInfo.getMemName() + " 님!");
-			session.setAttribute("memResult", memInfo);
-			return "redirect:/";
-		}
+	        boolean idMatches = mem.getMemID().equals(memInfo.getMemID());
+	        boolean isMatches = pwEncoder.matches(mem.getMemPassword(), memInfo.getMemPassword());
+	        if (isMatches && idMatches) {
+	            // login success
+	            rttr.addFlashAttribute("msgType", "성공 메세지");
+	            rttr.addFlashAttribute("msg", "로그인에 성공하셨습니다. 안녕하세요. " + memInfo.getMemID() + " 님!");
+	            session.setAttribute("memResult", memInfo);
+	            return "redirect:/";
+	        }else {
+	        	// login failure
+		        rttr.addFlashAttribute("msgType", "실패 메세지");
+		        rttr.addFlashAttribute("msg", "로그인에 실패하셨습니다. 아이디와 비밀번호를 확인해주세요.");
+		        return "redirect:/loginForm.do";
+	        }
+	    } catch (Exception e) {
+	        System.out.println("login Exception e: " + e);
+	        System.out.println(mem);
+	        // login failure
+	        rttr.addFlashAttribute("msgType", "실패 메세지");
+	        rttr.addFlashAttribute("msg", "로그인에 실패하셨습니다. 아이디와 비밀번호를 확인해주세요.");
+	        return "redirect:/loginForm.do";
+	    }
 	}
+
 
 	// 로그아웃 기능 : 요청 URL - /logout.do
 	@RequestMapping("/logout.do")
