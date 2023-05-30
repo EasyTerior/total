@@ -19,6 +19,9 @@ public interface MemberMapper {
 	public void imageUpload(Member mem);
 
 	public Member getMember(String memID);
+
+	public int updatePW(Member mem);
+	
 	
 	
 }
