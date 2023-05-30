@@ -112,7 +112,7 @@ rel="stylesheet" /><!-- icons -->
 					<!-- CSRF token -->
 					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
 					<!-- memPassword1와 memPassword2가 일치해야만이 memPassword가 될 것 -->
-					<input type="hidden" id="memPassword" name=" " />
+					<input type="hidden" id="memPassword" name="memPassword" />
 					<div class="row mb-3">
 					    <label for="memID" class="col-sm-2 col-form-label">아이디</label>
 					    <div class="col-sm-7">
