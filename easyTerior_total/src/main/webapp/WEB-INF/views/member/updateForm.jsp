@@ -7,71 +7,111 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"><!-- icons -->
+<link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
+rel="stylesheet" /><!-- icons -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+<style>
+body, main, section {
+position: relative;
+}
+</style>
 <script type="text/javascript">
-	//주소 채우기
-	function addressFill(){
-		let add1 = $("#address").val();
-		let add2 = $("#detailAddress").val();
-		let add3 = $("#extraAddress").val();
-		let fullAddress = add1+ " " + add2 + " " + add3;
-		$("#memAddress").val(fullAddress);
-		
-	}
 
-	// 비밀번호 동일 여부 확인
-	function passwordCheck(){
-		let memPassword1 = $("#memPassword1").val();
-		let memPassword2 = $("#memPassword2").val();
-		if (memPassword1 != memPassword2){
-			$("#passMessage").text("비밀번호가 서로 일치하지 않습니다. 비밀번호를 확인해주세요.");
-			$("#passMessage").css("color","red");
-		}else{
-			$("#passMessage").text("비밀번호가 서로 일치합니다.");
-			$("#passMessage").css("color","green");
-			$("#memPassword").val(memPassword1);
+//CSRF 토큰의 이름과 값 설정 -> 비동기 방식은 csrfHeaderName으로 넣음
+var csrfHeaderName = "${ _csrf.headerName }"; // 문자열 형태로
+var csrfTokenValue = "${ _csrf.token }";
+
+//서버 메세지 전달
+function serverMsg(){
+	// 회원가입 실패 후 modal 표시
+	if(${ not empty msgType}){
+		if(${msgType eq "실패 메세지"}){
+			$("#checkType .modal-header.card-header").attr("class","modal-header card-header bg-warning");
 		}
-		
+		$("#myModal").modal("show");
 	}
-	
-	$(document).ready(function(){
-		// 회원가입 실패 후 modal 표시
-		if(${ not empty msgType}){
-			if(${msgType eq "실패 메세지"}){
-				$("#checkType .modal-header.card-header").attr("class","modal-header card-header bg-warning");
-			}
-			$("#myModal").modal("show");
+}
+
+
+//사용자 정보 가져오기
+function getUserInfo() {
+
+	var memResultObj = {"memID":"${memResult.memID}"};
+	$.ajax({
+		url: "member/getUserInfo",
+		type: "POST",
+		beforeSend : function(xhr){ // xhr 에 담아서 보냄
+			xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+		},
+		data: memResultObj,
+		dataType: "json",
+		success: function(response) {
+			// 서버에서 반환된 사용자 정보를 response 변수로 받아 처리
+			// JSON 형태의 사용자 정보를 JavaScript 객체로 변환
+			console.log("success - memID : "+response.memID);
+			// 처리 로직 작성
+		},
+		error: function(xhr, status, error) {
+			alert("Error - xhr : "+xhr+" | status : "+status+" | error : "+error);
+			console.error(error);
 		}
-		
-		$(".updateList .on").addClass("fw-bold");
+	});
+}
+
+// 화면 방문 시 목록 중에서 처음만 보여주기.
+function resetForm(){
+	// 모든 formContainer 숨기기
+    $(".formContainer").hide();
+	// 첫 번째 li에 on 클래스 추가 및 첫 번째 formContainer 보여주기
+    $(".updateList li:first").addClass("on");
+    $("#formContainer1").show();
+    $(".updateList .on").addClass("fw-bold");
+    
+ 	// 페이지 로드 시 사용자 정보 가져오기
+    getUserInfo();
+ 	
+ 	// 주소 처리 하기
+    let fullAddress = "${memResult.memAddress}"; // $("#memAddress").val();
+    //console.log("fullAddress : "+fullAddress);
+}
+
+$(document).ready(function() {
+	// 서버 메세지 전달 : msgType
+	serverMsg();
+	resetForm();
+	// getUserInfo();
+	
+	// li 클릭 시 해당하는 formContainer 표시
+	$("ul.updateList li").click(function() {
+		var target = $(this).index() + 1;
+		$(".formContainer").hide();
+		$("#formContainer" + target).show();
 	});
 	
-	// 비동기 회원정보 수정하기
-	$(".updateList li").on("click", function(){
-		alert("updateList li click");
-        var liIndex = $(this).index() + 1;
-        var formContainerId = "formContainer" + liIndex;
-	     // 모든 formContainer 숨기기
-        $(".formContainer").hide();
-        
-        // 클릭된 li에 대한 처리
-        $(this).addClass("on").siblings().removeClass("on");
-        $("#" + formContainerId).show();
-        
-        $.ajax({
-            url: "loadUpdateForm.do",
-            type: "GET",
-            data: { formIndex: liIndex },
-            success: function(data){
-                $("#" + formContainerId).html(data);
-            },
-            error: function(){
-                alert("폼을 가져오는 데 실패했습니다.");
-            }
-        });
-    });
+	/*
+	var memInfo = {
+		memID: "${memResult.memID}",
+		memPassword: "${memResult.memPassword}",
+		memName: "${memResult.memID}",
+		memNickname: "${memResult.memNickname}",
+		memPhone: "${memResult.memPhone}",
+		memEmail: "${memResult.memEmail}",
+		memAddress: "${memResult.memAddress}",
+	};
+	console.log(memInfo);
+	*/
+	/*
+	var memResultString = "${memResult}";
+	memResultString = memResultString.replace("Member", "").slice(1, -1);
+	memResultString = JSON.stringify(memResultString);
+	var memResultObj = JSON.parse(memResultString);
+	console.log(memResultObj);
+	*/
+	alert('document ready');
 	
+});
 </script>
 <title>updateForm.do</title>
 </head>
@@ -85,28 +125,100 @@
 			<div class="mb-5"><h2 class="text-center">마이 페이지</h2></div>
 			<div class="row">
 				<div class="col-4 bg-white">
-					<input type="hidden" name=memName id="memName" value="${ memResult.memName }" />
-					<img class="img d-block m-auto" style="width:150px;" src="${ contextPath }/resources/images/common/person.png" alt="profile default">
+					<div class="">
+						<img class="img d-block m-auto" style="width:150px;" src="${ contextPath }/resources/images/common/person.png" alt="profile default">
+						<a href="${ contextPath }/imageForm.do" class="nav-link link-dark"><i class="bi bi-camera-fill align-middle"></i></a>
+					</div>
 					<p class="mt-3 mb-4 text-center fs-4 fw-bold ">${memResult.memName}님 환영합니다.</p>
 					<ul class="updateList m-auto" style="width:200px;">
-						<li class="mb-3 ps-2 on"><a href="" class="link-dark text-decoration-none">개인정보 수정</a></li>
-						<li class="mb-3 ps-2"><a href="" class="link-dark text-decoration-none">비밀번호 변경</a></li>
-						<li class="mb-3 ps-2"><a href="" class="link-dark text-decoration-none">저장한 이미지 확인</a></li>
-						<li class="mb-3 ps-2"><a href="" class="link-dark text-decoration-none">취향 결과 확인</a></li>
+						<li class="mb-3 ps-2 on"><span role="button" class="link-dark text-decoration-none">개인정보 수정</span></li>
+						<li class="mb-3 ps-2"><span role="button" class="link-dark text-decoration-none">비밀번호 변경</span></li>
+						<li class="mb-3 ps-2"><span role="button" class="link-dark text-decoration-none">저장한 이미지 확인</span></li>
+						<li class="mb-3 ps-2"><span role="button" class="link-dark text-decoration-none">취향 결과 확인</span></li>
 					</ul>
 				</div>
 				<div class="col-7 bg-secondary">
-					<div id="formContainer1" class="container m-auto" style="width:70%;">
-						formContainer1
+					<div id="formContainer1" class="container m-auto formContainer" style="width:70%;">
+						<form id="personal" name="personal">
+						<legend class="mt-4 mb-3 text-center fw-bold">개인정보 수정 하기</legend>	
+							<div class="row mt-4 mb-3">
+							    <label for="memNickname" class="col-sm-2 col-form-label">닉네임</label>
+							    <div class="col-sm-10">
+							        <input type="text" value="${memResult.memNickname}" placeholder="공백 없이 한글, 영어, 숫자로 10자 미만의 닉네임만 가능합니다." pattern="^[ㄱ-ㅎ가-힣a-zA-Z0-9]+" maxlength=10 class="form-control" id="memNickname" name="memNickname" required />
+							    </div>
+							</div>
+							<div class="row mb-3">
+							    <label for="memPhone" class="col-sm-2 col-form-label">휴대폰 번호</label>
+							    <div class="col-sm-10">
+							        <input type="text" placeholder="000-0000-0000" pattern="^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$" class="form-control" id="memPhone" name="memPhone" required />
+							    </div>
+							</div>
+							<div class="row mb-3">
+							    <label for="memEmail" class="col-sm-2 col-form-label">이메일</label>
+							    <div class="col-sm-10">
+							        <input type="email" placeholder="email@email.com" pattern="^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$" class="form-control" id="memEmail" name="memEmail" required />
+							    </div>
+							</div>
+							<div class="row mb-3">
+							    <label for="memAddress" class="col-sm-2 col-form-label">주소</label>
+							    <input type="hidden" name="memAddress" id="memAddress" />
+							    <div class="col-sm-10">
+							    	<div class="row mb-2">
+							    		<div class="col-auto">
+							    			<button type="button" class="btn btn-info align-top" onclick="addressFullFill()">우편번호 찾기</button>
+							    		</div>
+							    		<div class="col-auto">
+							    			<input type="text" id="postcode" class="form-control"  placeholder="우편번호" />
+							    		</div>
+							    	</div>
+							    	<div class="row">
+							    		<div class="col-auto mb-2">
+							    			<input type="text" onchange="addressFill()" id="address" class="form-control" style="width: 300px;" placeholder="주소" required />
+							    		</div>
+							    		<div class="col-auto mb-2">
+							    			<input type="text" onchange="addressFill()" id="detailAddress" class="form-control" placeholder="상세주소" />
+							    		</div>
+							    		<div class="col-auto mb-2">
+							    			<input type="text" style="width: 150px;" id="extraAddress" class="form-control" placeholder="참고항목" />
+							    		</div>
+							    	</div>
+							    </div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-sm-10 offset-sm-2 text-center">
+							        <button type="submit" class="btn btn-primary">수정하기</button>
+							        <button type="reset" class="btn btn-warning">수정하기</button>
+							    </div>
+							</div>
+						</form>
 					</div>
-					<div id="formContainer2" class="container m-auto" style="width:70%;">
-						formContainer2
+					<div id="formContainer2" class="container m-auto formContainer" style="width:70%;">
+						<form id="password" name="password">
+						<legend class="mt-4 mb-3 text-center fw-bold">비밀번호 변경 하기</legend>	
+							<div class="row mb-3 position-relative">
+							    <label for="memPassword1" class="col-sm-2 col-form-label">비밀번호</label>
+							    <div class="col-sm-10">
+							        <input type="password" placeholder="비밀번호 현재 패턴 적용 안 함" name="memPassword1" id="memPassword1" class="form-control" onkeyup="passwordCheck()" />
+							    </div>
+							</div>
+							<div class="row mb-3 position-relative">
+							    <label for="memPassword2" class="col-sm-2 col-form-label">비밀번호 확인</label>
+							    <div class="col-sm-10">
+							        <input type="password" placeholder="비밀번호 현재 패턴 적용 안 함" name="memPassword2" id="memPassword2" class="form-control" onkeyup="passwordCheck()" />
+							        <div class="valid-tooltip"></div>
+							    </div>
+							</div>
+						</form>
 					</div>
-				    <div id="formContainer3" class="container m-auto" style="width:70%;">
-				    	formContainer3
+				    <div id="formContainer3" class="container m-auto formContainer" style="width:70%;">
+				    	<form id="savedImages" name="savedImages">
+				    	<legend class="mt-4 mb-3 text-center fw-bold">저장한 이미지 수정하기</legend>	
+						</form>
 				    </div>
-				    <div id="formContainer4" class="container m-auto" style="width:70%;">
-				    	formContainer4
+				    <div id="formContainer4" class="container m-auto formContainer" style="width:70%;">
+				    	<form id="savedStyle" name="savedStyle">
+				    	<legend class="mt-4 mb-3 text-center fw-bold">저장한 스타일 확인하기</legend>	
+						</form>
 				    </div>
 				</div>
 			</div>
