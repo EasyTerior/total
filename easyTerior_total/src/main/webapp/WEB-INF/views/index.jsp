@@ -37,7 +37,7 @@ position: relative;
 	<jsp:include page="common/submenu.jsp"></jsp:include>
 	<!-- section 안에 div 넣고 하기 -->
 	<section class="fixed-top container-fluid overflow-auto h-100" style="margin:137px 0 56px 0;padding:0 0 56px 100px;">
-		<div class="container justify-content-center m-auto" style="min-height:100vh;">
+		<div class="container justify-content-center m-auto"> <!-- style="min-height:100vh;" index만 제외 -->
 			<div id="carouselExampleCaptions" class="carousel slide carousel-fade carousel-dark mt-4" data-bs-ride="carousel">
 			    <div class="carousel-indicators" style="bottom:-55px;">
 			        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -46,7 +46,7 @@ position: relative;
 			    </div>
 			    <div class="carousel-inner">
 			        <div class="carousel-item active" data-bs-interval="3000">
-			        	<div class="d-block w-50 float-start mt-5 text-center">
+			        	<div class="d-block w-50 float-start text-center" style="margin-top:90px;">
 			        		<h5 class="fw-bold fs-2 mb-5">방 사진을 올려보세요!<br/>스타일 분석을 해드려요</h5>
 			        		<span class="mt-3 mb-3 d-block">당신의 방이 어떤 스타일인지 궁금하지 않으신가요?<br/>방 사진을 업로드하면 확인할 수 있어요!<br/>취향에 맞는 인테리어 상품 추천까지 해드려요.</span>
 			        		<a href="${ contextPath }/styleRoom.do" class="d-inline-block m-auto btn btn-primary">분석하러 가기</a>
@@ -54,15 +54,15 @@ position: relative;
 			            <a href="#" class="d-block w-50 float-end"><img class="d-block w-100" src="${ contextPath }/resources/images/common/styleRoom.jpg" alt="styleRoom"></a>
 			        </div>
 			        <div class="carousel-item" data-bs-interval="3000">
-			        	<div class="d-block w-50 float-start mt-5 text-center">
+			        	<div class="d-block w-50 float-start text-center" style="margin-top:90px;">
 			        		<h5 class="fw-bold fs-2 mb-5">방 사진 속 소품의 색깔을 <br/>변경해보세요!</h5>
 			        		<span class="mt-3 mb-3 d-block">사진 속 소품의 컬러를 변경하고 적용시켜보세요.<br/>분위기에 맞는 소품과 컬러까지 추천해드려요.</span>
 			        		<a href="${ contextPath }/colorChange.do" class="d-inline-block m-auto btn btn-primary">색깔 변경하기</a>
 			        	</div>
 			            <a href="#" class="d-block w-50 float-end"><img class="d-block w-100" src="${ contextPath }/resources/images/common/colorChange.jpg" alt="colorChange"></a>
 			        </div>
-			        <div class="carousel-item" data-bs-interval="3000">
-			        	<div class="d-block w-50 float-start mt-5 text-center">
+			        <div class="carousel-item" data-bs-interval="3000" style="margin-top:90px;">
+			        	<div class="d-block w-50 float-start text-center">
 			        		<h5 class="fw-bold fs-2 mb-5">커뮤니티에서 당신의 <br/>스타일을 자랑해보세요!</h5>
 			        		<span class="mt-3 mb-3 d-block">당신이 변경한 스타일을 자랑해보세요.<br/>서로에게 추천받고 질문해봅시다.</span>
 			        		<a href="${ contextPath }/boardMain.do" class="d-inline-block m-auto btn btn-primary">커뮤니티 가기</a>
