@@ -61,8 +61,8 @@ position: relative;
 			        	</div>
 			            <a href="#" class="d-block w-50 float-end"><img class="d-block w-100" src="${ contextPath }/resources/images/common/colorChange.jpg" alt="colorChange"></a>
 			        </div>
-			        <div class="carousel-item" data-bs-interval="3000" style="margin-top:90px;">
-			        	<div class="d-block w-50 float-start text-center">
+			        <div class="carousel-item" data-bs-interval="3000">
+			        	<div class="d-block w-50 float-start text-center" style="margin-top:90px;">
 			        		<h5 class="fw-bold fs-2 mb-5">커뮤니티에서 당신의 <br/>스타일을 자랑해보세요!</h5>
 			        		<span class="mt-3 mb-3 d-block">당신이 변경한 스타일을 자랑해보세요.<br/>서로에게 추천받고 질문해봅시다.</span>
 			        		<a href="${ contextPath }/boardMain.do" class="d-inline-block m-auto btn btn-primary">커뮤니티 가기</a>
