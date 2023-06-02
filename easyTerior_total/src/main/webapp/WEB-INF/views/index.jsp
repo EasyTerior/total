@@ -38,8 +38,8 @@ position: relative;
 	<!-- section 안에 div 넣고 하기 -->
 	<section class="fixed-top container-fluid overflow-auto h-100" style="margin:137px 0 56px 0;padding:0 0 56px 100px;">
 		<div class="container justify-content-center m-auto" style="min-height:100vh;">
-			<div id="carouselExampleCaptions" class="carousel slide carousel-fade carousel-dark mt-5" data-bs-ride="carousel">
-			    <div class="carousel-indicators">
+			<div id="carouselExampleCaptions" class="carousel slide carousel-fade carousel-dark mt-4" data-bs-ride="carousel">
+			    <div class="carousel-indicators" style="bottom:-55px;">
 			        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
 			        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
 			        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
