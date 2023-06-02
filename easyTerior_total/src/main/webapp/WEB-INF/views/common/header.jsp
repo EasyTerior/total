@@ -38,16 +38,13 @@
       			<img alt="${memResult.memProfile}" src="${ contextPath }/resources/profile/${memResult.memProfile}" class="rounded-circle align-middle" style="width:50px;height:50px;" />
       		</c:if>
       		<c:if test="${ memResult.memProfile eq ''}">
-      			<img alt="${memResult.memProfile}" src="${ contextPath }/resources/images/person.png" class="rounded-circle align-middle" style="width:50px;height:50px;" />
+      			<img alt="${memResult.memProfile}" src="${ contextPath }/resources/images/common/person.png" class="rounded-circle align-middle" style="width:50px;height:50px;" />
       		</c:if>
       		<span class="navbar-text align-middle"><strong class="px-2">${ memResult.memName }</strong>님 안녕하세요!</span>
       	</li>
       	<li class="nav-item">
       		<a href="${ contextPath }/updateForm.do" class="nav-link link-dark"><i class="bi bi-wrench align-middle"></i><span class="px-2 align-middle">회원정보수정</span></a>
       	</li>
-        <li class="nav-item">
-        	<a href="${ contextPath }/imageForm.do" class="nav-link link-dark"><i class="bi bi-camera-fill align-middle"></i><span class="px-2 align-middle">프로필사진등록</span></a>
-        </li>
         <li class="nav-item">
         	<a href="${ contextPath }/logout.do" class="nav-link link-dark"><i class="bi bi-box-arrow-right align-middle"></i><span class="px-2 align-middle">로그아웃</span></a>
         </li>

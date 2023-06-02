@@ -12,6 +12,8 @@
 <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
 rel="stylesheet" /><!-- icons -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+<script src="common.js"></script>
+
 <script type="text/javascript">
 	function registerCheck(){
 		let memID = $("#memID").val();
@@ -57,7 +59,6 @@ rel="stylesheet" /><!-- icons -->
 			$(".valid-tooltip").css("color","green");
 			$("#memPassword").val(memPassword1);
 		}
-		
 	}
 	// 주소 채우기
 	function addressFill(){
@@ -165,24 +166,19 @@ rel="stylesheet" /><!-- icons -->
 					    <input type="hidden" name="memAddress" id="memAddress" />
 					    <div class="col-sm-10">
 					    	<div class="row mb-2">
-					    		<div class="col-auto">
-					    			<button type="button" class="btn btn-info align-top" onclick="addressFullFill()">우편번호 찾기</button>
-					    		</div>
-					    		<div class="col-auto">
-					    			<input type="text" id="postcode" class="form-control"  placeholder="우편번호" />
+					    		<div class="col-12">
+					    			<input type="text" onchange="addressFill()" id="address" class="form-control" style="min-width: 300px;" placeholder="주소" required />
 					    		</div>
 					    	</div>
-					    	<div class="row">
-					    		<div class="col-auto">
-					    			<input type="text" onchange="addressFill()" id="address" class="form-control" style="width: 300px;" placeholder="주소" required />
-					    		</div>
+					    	<div class="row mb-2">
 					    		<div class="col-auto">
 					    			<input type="text" onchange="addressFill()" id="detailAddress" class="form-control" placeholder="상세주소" />
 					    		</div>
 					    		<div class="col-auto">
-					    			<input type="text" style="
-    width: 150px;
-" id="extraAddress" class="form-control" placeholder="참고항목" />
+					    			<input type="text" style="width: 150px;" onchange="addressFill()" id="extraAddress" class="form-control" placeholder="참고항목" />
+					    		</div>
+					    		<div class="col-auto">
+					    			<button type="button" class="btn btn-info align-top" onclick="addressFullFill()">주소찾기</button>
 					    		</div>
 					    	</div>
 					    </div>
@@ -190,6 +186,7 @@ rel="stylesheet" /><!-- icons -->
 					<div class="row mb-3">
 					    <div class="col-sm-10 offset-sm-2 text-center">
 					        <button type="submit" class="btn btn-primary">가입하기</button>
+					        <button type="reset" class="btn btn-warning align-top" onclick="addressFullFill()">취소하기</button>
 					    </div>
 					</div>
 				</form>
@@ -266,8 +263,11 @@ rel="stylesheet" /><!-- icons -->
                 }
 
                 // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                document.getElementById('postcode').value = data.zonecode;
+                // document.getElementById('postcode').value = data.zonecode;
                 document.getElementById("address").value = addr;
+             	// memAddress 에 추가
+                document.getElementById("memAddress").value = addr;
+                
                 // 커서를 상세주소 필드로 이동한다.
                 document.getElementById("detailAddress").focus();
             }
