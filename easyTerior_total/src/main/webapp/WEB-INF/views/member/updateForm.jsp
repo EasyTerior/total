@@ -149,8 +149,13 @@ $(document).ready(function() {
 			<div class="mb-5"><h2 class="text-center">마이 페이지</h2></div>
 			<div class="row">
 				<div class="col-4 bg-white">
-					<div class="">
-						<img class="img d-block m-auto" style="width:150px;" src="${ contextPath }/resources/images/common/person.png" alt="profile default">
+					<div class="text-center">
+						<c:if test="${ memResult.memProfile ne ''}">
+				      		<img alt="${memResult.memProfile}" src="${ contextPath }/resources/profile/${memResult.memProfile}" class="rounded-circle align-middle" style="width:200px; height:200px;border:1px solid #d6d6d6; " />
+				      	</c:if>
+				      	<c:if test="${ memResult.memProfile eq ''}">
+				      		<img alt="${memResult.memProfile}" src="${ contextPath }/resources/images/common/person.png" class="rounded-circle align-middle" style="width:200px;height:200px;border:1px solid #d6d6d6; " />
+				      	</c:if>
 						<a href="${ contextPath }/imageForm.do" class="nav-link link-dark"><i class="bi bi-camera-fill align-middle"></i></a>
 					</div>
 					<p class="mt-3 mb-4 text-center fs-4 fw-bold ">${memResult.memName}님 환영합니다.</p>
@@ -161,7 +166,7 @@ $(document).ready(function() {
 						<li class="mb-3 ps-2"><span role="button" class="link-dark text-decoration-none">취향 결과 확인</span></li>
 					</ul>
 				</div>
-				<div class="col-7 bg-secondary">
+				<div class="col-7 bg-light">
 					<div id="formContainer1" class="container m-auto formContainer" style="width:90%;">
 						<form id="personal" name="personal">
 						<legend class="mt-4 mb-3 text-center fw-bold">개인정보 수정 하기</legend>	
