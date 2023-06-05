@@ -7,7 +7,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"><!-- icons -->
+<link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
+rel="stylesheet" /><!-- icons --><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -21,28 +23,43 @@
 	});
 	
 </script>
+
 <title>imageForm.do</title>
 </head>
 <body>
 <section class="main">
 	<jsp:include page="../common/header.jsp"></jsp:include>
+	<jsp:include page="../common/submenu.jsp"></jsp:include>
+	
+	<section class="fixed-top container-fluid overflow-auto" style="height:100%;margin:137px 0 0;padding:56px 0 0 100px;">
+	<div class="container-fluid" style="min-height:100vh;margin-bottom: 200px;">
+	
 	<div class="container-fluid">
-		<h2>Spring MVC 03 - imageForm.do</h2>
-		<div class="card ">
-			<div class="card-header">
-				<h3 class="text-center">프로필 이미지 등록</h3>
-			</div>
-			<div class="card-body">
+
+				<div class="mb-5"><h2 class="text-center">프로필 이미지 수정</h2></div>
+		
+			
+			<div class="row">
+			<div class="py-5 bg-light">
 				<form action="${ contextPath }/imageUpload.do?${_csrf.parameterName}=${ _csrf.token }" method="POST" class="form container" enctype="multipart/form-data">
 					<!-- CSRF token -->
 					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
 					<input type="hidden" name="memID" value="${ memResult.memID }" />
 					<table class="table table-bordered text-center">
+					<div class="mb-3 row justify-content-md-center">
+						<c:if test="${ memResult.memProfile ne ''}">
+				      		<img alt="${memResult.memProfile}" src="${ contextPath }/resources/profile/${memResult.memProfile}" class="rounded-circle align-middle" style="width:200px; height:200px;border:1px solid #d6d6d6; " />
+				      	</c:if>
+				      	<c:if test="${ memResult.memProfile eq ''}">
+				      		<img alt="${memResult.memProfile}" src="${ contextPath }/resources/images/common/person.png" class="rounded-circle align-middle" style="width:200px;height:200px;border:1px solid #d6d6d6; " />
+				      	</c:if>
+				      	
+				      	<p class="fs-5 fw-bold text-center">${ memResult.memID }님 환영합니다.</p>
+				      	
+					</div>
+					
+					
 						<tbody>
-							<tr>
-								<th class="align-middle" style="width:150px;"><label for="memID">사용자 ID</label></th>
-								<td class="align-middle">${ memResult.memID }</td>
-							</tr>
 							<tr>
 								<th class="align-middle" style="width:150px;"><label for="memProfile">사진 업로드</label></th>
 								<td class="align-middle">
@@ -62,9 +79,14 @@
 					</table>
 				</form>
 			</div>
-			<div class="card-footer">Panel footer</div>
+			</div>
 		</div>
 	</div>
+
+
+	</section>
+	<jsp:include page="../common/footer.jsp"></jsp:include>
+	
 </section>
 <!-- The Modal -->
 <div class="modal fade" id="myModal"><!-- animation : fade -->
