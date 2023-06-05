@@ -7,7 +7,6 @@
 		<i class="bi bi-list fw-bolder fs-1"></i>
 	</button>
 </div>
-
 <div class="offcanvas offcanvas-start border-end border-dark border-5 bg-white m-auto" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel" style="position:abosolute; top:0; left:100px;">
     <div class="offcanvas-header position-relative">
         <h1 class="offcanvas-title m-auto" id="offcanvasExampleLabel">
@@ -19,12 +18,8 @@
     	<ul>
     		<li class="mb-3"><a href="${ contextPath }/styleRoom.do" class="px-3 nav-link link-dark">스타일 분석</a></li>
     		<li class="mb-3"><a href="${ contextPath }/colorChange.do" class="px-3 nav-link link-dark">색깔 변경하기</a></li>
-    		<li class="mb-3"><a href="${ contextPath }/boardMain.do" class="px-3 nav-link link-dark">커뮤니티</a>
-    		</li>
+    		<li class="mb-3"><a href="${ contextPath }/boardMain.do" class="px-3 nav-link link-dark">커뮤니티</a></li>
     	</ul>
-        <div>
-        EasyTerior
-        </div>
-    </div>
+   	</div>
 </div>
 <!-- Javascript -->

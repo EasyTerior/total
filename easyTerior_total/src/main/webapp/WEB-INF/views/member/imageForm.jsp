@@ -35,50 +35,44 @@ rel="stylesheet" /><!-- icons --><script src="https://cdn.jsdelivr.net/npm/boots
 	<div class="container-fluid" style="min-height:100vh;margin-bottom: 200px;">
 	
 	<div class="container-fluid">
-
-				<div class="mb-5"><h2 class="text-center">프로필 이미지 수정</h2></div>
-		
-			
+		<div class="mb-5"><h2 class="text-center">프로필 이미지 수정</h2></div>
 			<div class="row">
-			<div class="py-5 bg-light">
-				<form action="${ contextPath }/imageUpload.do?${_csrf.parameterName}=${ _csrf.token }" method="POST" class="form container" enctype="multipart/form-data">
-					<!-- CSRF token -->
-					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
-					<input type="hidden" name="memID" value="${ memResult.memID }" />
-					<table class="table table-bordered text-center">
-					<div class="mb-3 row justify-content-md-center">
-						<c:if test="${ memResult.memProfile ne ''}">
-				      		<img alt="${memResult.memProfile}" src="${ contextPath }/resources/profile/${memResult.memProfile}" class="rounded-circle align-middle" style="width:200px; height:200px;border:1px solid #d6d6d6; " />
-				      	</c:if>
-				      	<c:if test="${ memResult.memProfile eq ''}">
-				      		<img alt="${memResult.memProfile}" src="${ contextPath }/resources/images/common/person.png" class="rounded-circle align-middle" style="width:200px;height:200px;border:1px solid #d6d6d6; " />
-				      	</c:if>
-				      	
-				      	<p class="fs-5 fw-bold text-center">${ memResult.memID }님 환영합니다.</p>
-				      	
-					</div>
-					
-					
-						<tbody>
-							<tr>
-								<th class="align-middle" style="width:150px;"><label for="memProfile">사진 업로드</label></th>
-								<td class="align-middle">
-									<input type="file" name="memProfile" id="memProfile" class="form-control" />
-								</td>
-							</tr>
-						</tbody>
-						<tfoot>
-							<tr>
-								<td colspan="2" class="pull-right">
-									<p id="passMessage" class="text-center fw-bold"></p>
-									<button type="submit" class="btn btn-sm btn-primary">저장하기</button>
-									<button type="reset" class="btn btn-sm btn-warning">취소하기</button>
-								</td>
-							</tr>
-						</tfoot>
-					</table>
-				</form>
-			</div>
+				<div class="py-5 bg-light">
+					<form action="${ contextPath }/imageUpload.do?${_csrf.parameterName}=${ _csrf.token }" method="POST" class="form container" enctype="multipart/form-data">
+						<!-- CSRF token -->
+						<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
+						<input type="hidden" name="memID" value="${ memResult.memID }" />
+						<table class="table table-bordered text-center">
+						<div class="mb-3 row justify-content-md-center">
+							<c:if test="${ memResult.memProfile ne ''}">
+					      		<img alt="${memResult.memProfile}" src="${ contextPath }/resources/profile/${memResult.memProfile}" class="rounded-circle align-middle" style="width:200px; height:200px;border:1px solid #d6d6d6; " />
+					      	</c:if>
+					      	<c:if test="${ memResult.memProfile eq ''}">
+					      		<img alt="${memResult.memProfile}" src="${ contextPath }/resources/images/common/person.png" class="rounded-circle align-middle" style="width:200px;height:200px;border:1px solid #d6d6d6; " />
+					      	</c:if>
+					      	<p class="fs-5 fw-bold text-center">${ memResult.memID }님 환영합니다.</p>
+					      	
+						</div>
+							<tbody>
+								<tr>
+									<th class="align-middle" style="width:150px;"><label for="memProfile">사진 업로드</label></th>
+									<td class="align-middle">
+										<input type="file" name="memProfile" id="memProfile" class="form-control" />
+									</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="2" class="pull-right">
+										<p id="passMessage" class="text-center fw-bold"></p>
+										<button type="submit" class="btn btn-sm btn-primary">저장하기</button>
+										<button type="reset" class="btn btn-sm btn-warning">취소하기</button>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>

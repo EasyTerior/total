@@ -36,47 +36,34 @@ position: relative;
 	<jsp:include page="../common/header.jsp"></jsp:include>
 	<jsp:include page="../common/submenu.jsp"></jsp:include>
 	<section class="fixed-top container-fluid overflow-auto h-100" style="margin:137px 0 56px 0;padding:0 0 56px 100px;">
-		<h1 class="text-center mt-4 mb-3">스타일 분석하기</h1>
+		<h1 class="text-center mt-4 mb-3">스타일 분석 결과</h1>
 		<!-- 실질 컨텐츠 위치 -->
 		<div class="container-fluid" style="min-height:100vh; margin-bottom:200px;">
-			<div class="row m-auto" style="width: 80%">
-				<div class="col-sm-6 m-auto" style="min-width:385px">
-					<div class="card border-0 d-flex justify-content-center align-items-center">
-						<div class="card-body">
-							<h5 class="text-center fw-bold">예시 이미지</h5>
-						</div>
-						<img class="card-img-bottom img-fluid" src="${ contextPath }/resources/images/common/StyleRoom_image_1.jpg" style="max-width:500px; max-height: 300px;" alt="StyleRoom_image_1.jpg">
+			<h3>
+				<span class="d-block mt-5 mb-3 fs-6 text-center">당신의 대표 인테리어는?</span>
+				<strong id="styleResult" class="d-block mb-5 fw-bold fs-2 text-center">스칸디나비아 스타일</strong>
+			</h3>
+			<form>
+				<div class="row m-auto text-center">
+					<div class="col">
+						<img src="${ contextPath }/resources/images/common/styleRoom_Result_image_1.png"
+							alt="Interior Image" class="img-fluid">
+					</div>
+					<div class="col-sm-3">
+						<h5 class="fw-bold fs-6 text-center">&lt;대표 스타일&gt;</h5>
+						<strong class="d-block mt-3 mb-4 fs-5"><span class="bg-primary d-block">스칸디나비아</span> 96% 일치</strong>
+						<strong class="d-block mt-3 mb-4 fs-6"><span class="bg-info d-block">모던</span> 72% 일치</strong>
 					</div>
 				</div>
-				<div class="col-sm-6 m-auto" style="min-width:385px">
-					<div class="card border-0 d-flex justify-content-center align-items-center">
-						<div class="card-body">
-							<h5 class="text-center fw-bold">이미지 가이드라인</h5>
-						</div>
-						<h7 class="text-center fw-bold">예시이미지처럼 방 전체가 다 보이도록 찍은 사진을
-						업로드해주세요.<br /><br />다음은 적절하지 않은 사진 예시 입니다.<br />소품만
-						보이는 사진은 인식이 어려워요!</h7>
-						<div class="row" style="margin-top: 20px">
-							<div class="col-sm-6">
-								<img class="img-fluid" src="${ contextPath }/resources/images/common/StyleRoom_image_2.png" style="max-width:200px; max-height: 200px;" alt="myImage">
-								<h4 class="text-center fw-bold">(x)</h4>
-							</div>
-							<div class="col-sm-6">
-								<img class="img-fluid" src="${ contextPath }/resources/images/common/StyleRoom_image_3.png"
-									style="max-width:200px; max-height: 200px;" alt="myImage">
-								<h4 class="text-center fw-bold">(x)</h4>
-							</div>
-						</div>
+				<div class="row mt-4 mb-4 ps-2 text-center">스칸디나비아 스타일은 스칸디나비아 지역의 디자인 철학으로, 간결하고 심플한 디자인 원칙을 따릅니다. 밝고 넓은 공간을 선호하며, 자연 소재인 목재와 플랜트를 활용하여 자연스러운 분위기를 조성합니다. 중립적인 색상과 자연광을 즐기며, 기능성과 실용성을 중시하여 실용적이면서도 아름다운 공간을 만들어냅니다.</div>
+				<div class="row mt-4 mb-4">
+					<div class="col text-center">
+						<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
+					<label for="styleSave" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width:260px">스타일 저장하기</label>
+					<input type="file" id="styleSave" class="invisible" />
 					</div>
 				</div>
-			</div>
-			<div class="row text-center" style="padding-top:50px;">
-				<form action="" method="POST" enctype="multipart/form-data" class="text-center">
-					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
-					<label for="imgUpload" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width:260px">사진 업로드</label>
-					<input type="file" id="imgUpload" class="invisible" />
-				</form>
-			</div>
+			</form>
 		</div>
 	</section>
 	<jsp:include page="../common/footer.jsp"></jsp:include>

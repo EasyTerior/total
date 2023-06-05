@@ -40,7 +40,7 @@ position: relative;
 		<!-- 실질 컨텐츠 위치 -->
 		<div class="container-fluid" style="min-height:100vh;margin-bottom:200px;">
 			<div class="row m-auto" style="width:80%">
-			    <div class="col-sm-6">
+			    <div class="col-sm-6 m-auto" style="min-width:385px">
 			        <div class="card border-0">
 			            <div class="card-body">
 			                <h5 class="card-title text-center fw-bold">예시 이미지</h5>
@@ -48,7 +48,7 @@ position: relative;
 			            <img class="card-img-bottom" src="${ contextPath }/resources/images/common/colorChange.jpg" alt="colorChange">
 			        </div>
 			    </div>
-			    <div class="col-sm-6">
+			    <div class="col-sm-6 m-auto" style="min-width:385px">
 			        <div class="card border-0">
 			            <div class="card-body">
 			                <h5 class="card-title text-center mb-4 fw-bold">이미지 가이드라인</h5>
@@ -58,10 +58,11 @@ position: relative;
 			    </div>
 			</div>
 			<div class="row text-center" style="padding-top:50px;">
-				<form action="" method="POST" enctype="multipart/form-data" class="text-center">
+			<!--  action="http://127.0.0.1:5000/process_image" -->
+				<form action="colorSelect.do" method="POST" enctype="multipart/form-data" id="uploadForm" class="text-center">
 					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
 					<label for="imgUpload" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width:260px">사진 업로드</label>
-					<input type="file" id="imgUpload" class="invisible" />
+					<input type="file" onchange="document.getElementById('uploadForm').submit();" id="imgUpload" class="invisible" />
 				</form>
 			</div>
 		</div>
