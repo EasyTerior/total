@@ -33,6 +33,4 @@ public class ServletConfig implements WebMvcConfigurer {
 		// WebMvcConfigurer.super.configureViewResolvers(registry);
 	}
 	
-
-	
 }

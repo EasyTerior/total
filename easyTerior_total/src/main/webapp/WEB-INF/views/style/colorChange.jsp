@@ -59,10 +59,11 @@ position: relative;
 			</div>
 			<div class="row text-center" style="padding-top:50px;">
 			<!--  action="http://127.0.0.1:5000/process_image" -->
-				<form action="colorSelect.do" method="POST" enctype="multipart/form-data" id="uploadForm" class="text-center">
+				<form action="${ contextPath }/colorSelect.do?${_csrf.parameterName}=${ _csrf.token }" method="POST" enctype="multipart/form-data" id="uploadForm" class="text-center">
 					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
 					<label for="imgUpload" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width:260px">사진 업로드</label>
-					<input type="file" onchange="document.getElementById('uploadForm').submit();" id="imgUpload" class="invisible" />
+					<input type="file" id="imgUpload" class="invisible" onchange="document.getElementById('uploadForm').submit();" />
+			        <input type="submit" style="display:none" />
 				</form>
 			</div>
 		</div>
