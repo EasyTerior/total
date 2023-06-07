@@ -56,7 +56,7 @@ position: relative;
 
 		        // 객체 정보 생성
 		        for (var i = 0; i < uniqueObjects.length; i++) {
-		          var objectID = uniqueObjects[i];
+		          var objectID = uniqueObjects[i].id;
 		          var objectInfo = {
 		            id: objectID,
 		            // ... 추가적인 객체 정보 필드들

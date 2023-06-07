@@ -23,7 +23,7 @@ from PIL import Image
 from IPython.display import Image as IPImage, display
 
 # flask
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, redirect
 from flask_cors import CORS
 
 # DB - MySQL Connection
@@ -103,13 +103,73 @@ def process_image():
 
         
         script = "D:/total/yolov5/segment/predict.py"
-        args = ["--weights", "best.pt", "--img", "736", "--conf", "0.2", "--source", "C:/test123/processed_image.jpg", "--retina-masks", "--save-txt"]
+        args = ["--weights", "best.pt", "--img", "736", "--conf", "0.2", "--source", save_path, "--retina-masks", "--save-txt"]
 
-        result = subprocess.run(["python", script] + args, capture_output=True, text=True)
+        script_result  = subprocess.run(["python", script] + args, capture_output=True, text=True)
 
         folder_path = "D:/total/yolov5/runs/predict-seg/"  # 기존 폴더 경로
         exp_prefix = "exp"
 
+        # exp 폴더에서 가장 큰 숫자를 찾기
+        exp_folders = [f for f in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, f)) and f.startswith(exp_prefix)]
+        latest_exp_folder = max(exp_folders, key=lambda x: int(x[len(exp_prefix):]) if x[len(exp_prefix):].isdigit() else -1)
+
+        if latest_exp_folder:
+            # 파일 경로 생성
+            file_path = os.path.join(folder_path, latest_exp_folder, "labels/processed_image.txt")
+
+            # Check if the file exists
+            if not os.path.isfile(file_path):
+                return redirect('http://localhost:8081/colorChange.do?message=' + urllib.parse.quote('Image not detected'))
+
+            with open(file_path, 'r') as file:
+                lines = file.read().splitlines()  # Remove newline characters
+
+        # Create a list to store the detected object IDs
+        detected_object_ids = []
+        #Create a mask image with the same shape as the original image
+        mask = np.zeros_like(image)
+
+        # Define color mappings for different classes
+        class_colors = {
+            0:(0,0,0), #침대
+            1:(0,0,0), #이불
+            2:(0,0,0), #카펫
+            3:(0,0,0), #의자
+            4:(0, 0, 0),  # 커튼
+            5:(0, 0, 0), #문
+            6:(0, 0, 0), #램프
+            7:(0, 0, 0), # 베개
+            8:(0, 0, 0), #선반
+            9:(0, 0, 0), #소파
+            10:(0, 0, 0), #테이블
+            #Add more class-color mappings as needed
+        }
+
+        # Iterate over the coordinates in reverse order and draw filled polygons on the mask image
+        for line in reversed(lines):
+            values = line.strip().split()
+            class_id = int(values[0])
+            class_coordinates = [(float(values[i]), float(values[i+1])) for i in range(1, len(values), 2)]
+            detected_object_ids.append(class_id)
+            # Convert normalized coordinates to pixel coordinates
+            pixel_coordinates = []
+            for x, y in class_coordinates:
+                x_pixel = int(x * image.shape[1])
+                y_pixel = int(y * image.shape[0])
+                pixel_coordinates.append((x_pixel, y_pixel))
+
+            # Convert pixel coordinates to NumPy array
+            polygon_coordinates = np.array([pixel_coordinates], dtype=np.int32)
+
+            # Get the color for the current class ID
+            color = class_colors.get(class_id, (0, 0, 0))  # Default to black color if class ID is not mapped
+
+            # Draw filled polygon on the mask image
+            cv2.fillPoly(mask, polygon_coordinates, color)
+
+        # Invert the mask to select the non-object regions
+        inverted_mask = cv2.bitwise_not(mask)
 
         
         #processed_img_path = 
