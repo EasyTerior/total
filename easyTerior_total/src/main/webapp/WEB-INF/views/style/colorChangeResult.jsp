@@ -36,30 +36,33 @@ position: relative;
 	<jsp:include page="../common/header.jsp"></jsp:include>
 	<jsp:include page="../common/submenu.jsp"></jsp:include>
 	<section class="fixed-top container-fluid overflow-auto h-100" style="margin:137px 0 56px 0;padding:0 0 56px 100px;">
-		<h1 class="text-center mt-4 mb-5">소품 색 변경하기</h1>
+		<h1 class="text-center mt-4 mb-3">소품 색 변경하기</h1>
 		<!-- 실질 컨텐츠 위치 -->
 		<div class="container-fluid" style="min-height:100vh;margin-bottom:200px;">
-			<div class="row m-auto card-group" style="width:80%">
-				<div class="card border-0" style="min-width:385px">
-		            <div class="card-body">
-		                <h5 class="card-title text-center mb-4 fw-bold">예시 이미지</h5>
-		                <img class="card-img-bottom" src="${ contextPath }/resources/images/common/colorChange.jpg" alt="colorChange">
-		            </div>
-		        </div>
-		        <div class="card border-0" style="min-width:385px">
-		            <div class="card-body">
-		                <h5 class="card-title text-center mb-4 fw-bold">이미지 가이드라인</h5>
-		                <p class="card-text text-center" style="padding:90px 0 0 0;">소파, 침대, 커튼, 테이블, 의자의 색을 변경해볼 수 있어요!<br/> <br/>사물의 색을 변경해보고 싶다면<br/>위 사물 중 하나 이상 포함된 사진을 업로드해주세요.<br/><br/>사물이 명확히 나온 사진만 인식이 가능합니다.</p>
-		            </div>
-		        </div>
+			<div class="row m-auto" style="width:80%">
+			    <div class="col-sm-6 m-auto" style="min-width:385px">
+			        <div class="card border-0">
+			            <div class="card-body">
+			                <h5 class="card-title text-center fw-bold">예시 이미지</h5>
+			            </div>
+			            <img class="card-img-bottom" src="${ contextPath }/resources/images/common/colorChange.jpg" alt="colorChange">
+			        </div>
+			    </div>
+			    <div class="col-sm-6 m-auto" style="min-width:385px">
+			        <div class="card border-0">
+			            <div class="card-body">
+			                <h5 class="card-title text-center mb-4 fw-bold">이미지 가이드라인</h5>
+			                <p class="card-text text-center" style="padding:90px 0 0 0;">소파, 침대, 커튼, 테이블, 의자의 색을 변경해볼 수 있어요!<br/> <br/>사물의 색을 변경해보고 싶다면<br/>위 사물 중 하나 이상 포함된 사진을 업로드해주세요.<br/><br/>사물이 명확히 나온 사진만 인식이 가능합니다.</p>
+			            </div>
+			        </div>
+			    </div>
 			</div>
 			<div class="row text-center" style="padding-top:50px;">
 			<!--  action="http://127.0.0.1:5000/process_image" -->
-				<form action="${ contextPath }/imageSelect.do?${_csrf.parameterName}=${ _csrf.token }" method="POST" enctype="multipart/form-data" id="uploadForm" class="text-center">
+				<form action="${ contextPath }/colorSelect.do?${_csrf.parameterName}=${ _csrf.token }" method="POST" enctype="multipart/form-data" id="uploadForm" class="text-center">
 					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
-					<input type="hidden" name="memID" value="${ memResult.memID }" />
 					<label for="imgUpload" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width:260px">사진 업로드</label>
-					<input type="file" id="imgUpload" name="imgUpload" class="invisible" onchange="document.getElementById('uploadForm').submit();" />
+					<input type="file" id="imgUpload" class="invisible" onchange="document.getElementById('uploadForm').submit();" />
 			        <input type="submit" style="display:none" />
 				</form>
 			</div>
