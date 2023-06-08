@@ -14,6 +14,16 @@ CREATE TABLE member(
 
 DROP TABLE member;
 SELECT * FROM member;
+CREATE TABLE savestyle(
+	styleIdx INT AUTO_INCREMENT,
+	resultClass1 VARCHAR(1000) NOT NULL,
+	resultClass2 VARCHAR(1000) NOT NULL,
+	resultClass1_probability VARCHAR(1000) NOT NULL,
+	resultClass2_probability VARCHAR(1000) NOT NULL,
+	memID VARCHAR(50),
+	PRIMARY KEY(styleIdx)
+);
+SELECT * FROM testsavestyle;
 
 -- admin 계정 추가?
 SET @nextIdx = (SELECT IFNULL(MAX(memIdx) + 1, 1) FROM member);  -- 자동으로 idx 추가하면서 생성.

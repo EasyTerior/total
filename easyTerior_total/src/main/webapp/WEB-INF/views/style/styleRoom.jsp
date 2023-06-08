@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%-- JSTL --%>
+
+
 <c:set var="contextPath" value="${ pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html>
@@ -12,10 +14,31 @@
 <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
 rel="stylesheet" /><!-- icons -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+
+	<!-- BX 슬라이더 관련 라이브러리 호출 시작 --> 
+    <!-- jQuery library
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	 -->
+	
+	
+    <!-- bxSlider Javascript file -->
+    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+
+    <!-- bxSlider CSS file -->
+    <link href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css" rel="stylesheet" />
+    <!-- BX 슬라이더 관련 라이브러리 호출 종료 --> 
 <style>
 body, main, section {
 position: relative;
 }
+
+ .pline{
+ 		font-size: 20px;  /* 글자 크기 설정 */
+	    font-weight:bold;
+	    text-align:center;
+	    margin-top:20px;
+	    margin-bottom:20px;
+ } 
 </style>
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -28,6 +51,155 @@ position: relative;
 		}
 		
 	});
+	var csrfHeaderName = "${_csrf.headerName}";
+	var csrfTokenValue = "${_csrf.token}";
+	var slider;	
+	  $(document).ready(function() {
+		    // 이미지 파일 선택 시
+		    $("#imageFile").change(function() {
+		      var formData = new FormData();
+		      formData.append("file", $("#imageFile")[0].files[0]);
+
+		      // Ajax 통신
+		      $.ajax({
+		        url: "http://localhost:5000/upload",
+		        type: "POST",
+		        data: formData,
+		        contentType: false,
+		        processData: false,
+		        success: function(result) {
+		          // 결과 처리
+		          resultData = result;
+		          displayResult(result);
+
+		          // 쇼핑 API 호출
+		          callShoppingAPI(result);
+		          
+		        },
+		        error: function(error) {
+		          console.log(error);
+		        }
+		      });
+		    });
+
+		    // 결과 표시 함수
+		    function displayResult(result) {
+		      // 결과 값을 표시하는 로직 작성
+		      console.log(result);
+		      var uploadedImage = document.getElementById("uploadedImage");
+		      uploadedImage.src = URL.createObjectURL($("#imageFile")[0].files[0]);
+
+		      $("#resultType").text(result[0].class+" 스타일");
+		      
+		      // 쇼핑API 함수 호출
+		      callShoppingAPI(result);
+		      $("#resultText1-class").text(result[0].class);
+		      $("#resultText1-probability").text((result[0].probability * 100).toFixed(2) + "% 일치");
+		      $("#resultText2-class").text(result[1].class);
+		      $("#resultText2-probability").text((result[1].probability * 100).toFixed(2) + "% 일치");
+
+		      $("#resultType-Explanation").text(result[0].explanation);
+		      
+		      $("#result").css("display", "block");
+		      $("#base").css("display", "none");
+		    }
+		  });
+
+		  function callShoppingAPI(result) {
+		      var style = result[0].class;
+	          var image_urls = result[2].image_urls;
+	          console.log(image_urls);
+	          var image_src = result[2].image_src;
+	          console.log(image_src);
+				$('#bxslider').empty();
+
+		              for(var i = 0; i < image_urls.length; i++) {
+		                  $('#bxslider').append('<a href="'+image_urls[i]+'"><img src="'+image_src[i]+'" width="220px" height="220px"></a>');
+		              }
+
+		              // 이미지 로딩을 위해 약간의 시간을 기다립니다.
+		              setTimeout(function() {
+		            	    if (slider) {
+		            	        slider.destroySlider(); // 기존 슬라이더가 존재하는 경우 파괴합니다.
+		            	    }
+		            	    // 새로운 슬라이더를 생성하고 인스턴스를 저장합니다.
+		            	    slider = $('#bxslider').bxSlider({
+		            	        minSlides: 2,
+		            	        maxSlides: 100,
+		            	        moveSlides: 2,
+		            	        slideWidth: 300,
+		            	        slideMargin: 2,
+		            	        mode: 'horizontal',
+		            	        auto: true,
+		            	        pause: 3000,
+		            	        speed: 1000
+		            	    });
+		            	    console.log(slider);
+		            	}, 500);
+		          }
+		  
+			// 결과 숨기고 다시 분석 테스트 div 열기
+		    function showBase() {
+		        $("#result").css("display", "none");
+		        $("#base").css("display", "block");
+
+		    }
+			
+
+		    function saveStyle() {
+			    var memID = "${memResult.memID}";
+			    console.log(memID);
+		        if (memID == "") {
+		            alert("로그인 해주세요.");
+		        }
+		        else{
+		        var resultClass1 = $("#resultText1-class").text();
+		        //console.log(resultClass1);
+		        var resultClass2 = $("#resultText2-class").text();
+		        //console.log(resultClass2);
+		        var resultClass1_probability = $("#resultText1-probability").text();
+		        //console.log(resultClass1_probability);
+		        var resultClass2_probability = $("#resultText2-probability").text();
+		        //console.log(resultClass2_probability);
+		        
+		        
+		        }
+
+				var data = {
+				    resultClass1: resultClass1,
+				    resultClass2: resultClass2,
+				    resultClass1_probability: resultClass1_probability,
+				    resultClass2_probability: resultClass2_probability,
+				    memID: memID
+				};
+
+
+		        console.log(data);
+		        
+		        // ajax 비동기 통신
+		        $.ajax({
+		            url: "style/save",
+		            type: "post",
+		            beforeSend: function(xhr) {
+		                xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+		            },
+		            data: JSON.stringify(data),
+		            contentType: "application/json",
+		            dataType: "json",
+		            success: function(response) {
+		                //console.log(response); // 서버 응답 확인
+		                alert("성공적으로 저장되었습니다.");
+		                //showBase();
+		            },
+		            error: function(xhr, status, error) {
+		                console.log(xhr); // 에러 상세 정보 확인
+		                console.log(status);
+		                console.log(error);
+		                alert("저장에 실패했습니다.");
+		            }
+		        });
+		    }
+
 </script>
 <title>EasyTerior</title>
 </head>
@@ -35,7 +207,7 @@ position: relative;
 <main class="main">
 	<jsp:include page="../common/header.jsp"></jsp:include>
 	<jsp:include page="../common/submenu.jsp"></jsp:include>
-	<section class="fixed-top container-fluid overflow-auto h-100" style="margin:137px 0 56px 0;padding:0 0 56px 100px;">
+	<section id="base" class="fixed-top container-fluid overflow-auto h-100" style="margin:137px 0 56px 0;padding:0 0 56px 100px; display:block;">
 		<h1 class="text-center mt-4 mb-5">스타일 분석하기</h1>
 		<!-- 실질 컨텐츠 위치 -->
 		<div class="container-fluid" style="min-height:100vh; margin-bottom:200px;">
@@ -67,13 +239,48 @@ position: relative;
 				</div>
 			</div>
 			<div class="row text-center" style="padding-top:50px;">
-				<form action="" method="POST" enctype="multipart/form-data" class="text-center">
-					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
-					<label for="imgUpload" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width:260px">사진 업로드</label>
-					<input type="file" id="imgUpload" class="invisible" />
-				</form>
+<input type="file" id="imageFile" accept="image/*" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width: 260px; opacity: 0; position: absolute;">
+				<label for="imageFile" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width: 260px;">사진 업로드</label>
 			</div>
 		</div>
+	</section>
+		<section id="result" class="fixed-top container-fluid overflow-auto h-100" style="margin:137px 0 56px 0;padding:0 0 56px 100px; display: none;">
+		<h1 class="text-center mt-4 mb-3">스타일 분석 결과</h1>
+		<!-- 실질 컨텐츠 위치 -->
+		<div class="container-fluid" style="min-height:100vh; margin-bottom:200px;">
+			<h3>
+				<span class="d-block mt-5 mb-3 fs-6 text-center">당신의 대표 인테리어는?</span>
+				<strong id="resultType" class="d-block mb-5 fw-bold fs-2 text-center">스칸디나비아 스타일</strong>
+			</h3>
+			
+				<div class="row m-auto text-center">
+					<div class="col">
+						<img id="uploadedImage" src="${ contextPath }/resources/images/common/styleRoom_Result_image_1.png"
+							alt="Interior Image" class="img-fluid" style="width:80%;">
+					</div>
+					<div class="col-sm-3">
+						<h5 class="fw-bold fs-6 text-center">&lt;대표 스타일&gt;</h5>
+						<strong class="d-block mt-3 mb-4 fs-5"><span id="resultText1-class" class="bg-primary d-block">스칸디나비아</span><span id="resultText1-probability"> 96% 일치 </span></strong>
+						<strong class="d-block mt-3 mb-4 fs-6"><span id="resultText2-class" class="bg-info d-block">모던</span><span id="resultText2-probability"> 72% 일치 </span></strong>
+					</div>
+				</div>
+				<div id="resultType-Explanation" class="row mt-4 mb-4 ps-2 text-center" style="width:60%; margin:auto;">스칸디나비아 스타일은 스칸디나비아 지역의 디자인 철학으로, 간결하고 심플한 디자인 원칙을 따릅니다. 밝고 넓은 공간을 선호하며, 자연 소재인 목재와 플랜트를 활용하여 자연스러운 분위기를 조성합니다. 중립적인 색상과 자연광을 즐기며, 기능성과 실용성을 중시하여 실용적이면서도 아름다운 공간을 만들어냅니다.</div>
+				<div class="row mt-4 mb-4">
+					<div class="col text-center">
+					<button onclick="showBase()" class="btn btn-success ps-2 fw-bold" style="width: 260px;">다시 해보기</button>
+					<button onclick="saveStyle()" class="btn btn-primary ps-2 fw-bold" style="width: 260px;">스타일 저장하기</button>
+					</div>
+				</div>
+			
+			<br>
+				<p class="pline">이 스타일과 관련된 인테리어 아이템을 추천해드릴게요!</p>
+				<br>
+				<div>
+				<div id="bxslider">
+				</div>
+				</div>
+		</div>
+				
 	</section>
 	<jsp:include page="../common/footer.jsp"></jsp:include>
 </main>
