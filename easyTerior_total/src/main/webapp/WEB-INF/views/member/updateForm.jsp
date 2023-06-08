@@ -271,6 +271,10 @@ $(document).ready(function() {
 							</div>
 						</form>
 				    </div>
+				    
+				</div>
+				<div><br>
+				    <a href="leaveForm.do" style="text-decoration: none; color: black">회원탈퇴하기</a>
 				</div>
 			</div>
 		</div>

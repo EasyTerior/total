@@ -256,4 +256,35 @@ public class MemberController {
 
 	}
 
+// 회원 탈퇴 
+	// 회원탈퇴 form으로 이동 기능 : 요청 URL - /leaveForm.do
+	@RequestMapping("/leaveForm.do")
+	public String leaveForm() {
+		return "member/leaveForm";
+	}
+
+	// 회원탈퇴 기능 : 요청 URL - /memberDelete.do
+	@PostMapping("/memberDelete.do")
+	//@RequestMapping("/memberDelete.do")
+	public String memberDelete(Member mem, HttpSession session, RedirectAttributes rttr, HttpServletRequest request) {
+		
+		
+		Member member = (Member) session.getAttribute("memResult");
+		System.out.println(member.toString());
+		String sessionPass= member.getMemPassword();
+		String voPass = mem.getMemPassword();
+		
+		
+		if (!pwEncoder.matches(voPass, sessionPass)){
+			rttr.addFlashAttribute("msgType", "실패 메세지");
+			rttr.addFlashAttribute("msg", "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+
+	        return "redirect:/leaveForm.do";  // 수정된 부분: 리다이렉트할 URL 수정
+		}
+		
+		memberMapper.memberDelete(mem);
+		session.invalidate();
+		return "redirect:/";
+	}
+	
 }
