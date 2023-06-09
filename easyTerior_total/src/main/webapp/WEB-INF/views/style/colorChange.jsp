@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%-- JSTL --%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %><%-- Spring --%>
 <c:set var="contextPath" value="${ pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html>
@@ -49,7 +50,7 @@ position: relative;
 		        <div class="card border-0" style="min-width:385px">
 		            <div class="card-body">
 		                <h5 class="card-title text-center mb-4 fw-bold">이미지 가이드라인</h5>
-		                <p class="card-text text-center" style="padding:90px 0 0 0;">소파, 침대, 커튼, 테이블, 의자의 색을 변경해볼 수 있어요!<br/> <br/>사물의 색을 변경해보고 싶다면<br/>위 사물 중 하나 이상 포함된 사진을 업로드해주세요.<br/><br/>사물이 명확히 나온 사진만 인식이 가능합니다.</p>
+		                <p class="card-text text-center" style="padding:8vh 0 0 0;">소파, 침대, 쿠션, 테이블, 의자 등의 색을 변경해볼 수 있어요!<br/><br/>사물의 색을 변경해보고 싶다면<br/>위 사물 중 하나 이상 포함된 사진을 업로드해주세요.<br/><br/>사물이 명확히 나온 사진만 인식이 가능합니다.</p>
 		            </div>
 		        </div>
 			</div>

@@ -179,13 +179,13 @@ $(document).ready(function() {
 							<div class="row mb-3">
 							    <label for="memPhone" class="col-sm-3 col-form-label">휴대폰 번호</label>
 							    <div class="col-sm-9">
-							        <input type="text" placeholder="000-0000-0000" pattern="^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$" class="form-control" id="memPhone" name="memPhone" required />
+							        <input type="text" placeholder="000-0000-0000" pattern="^01[016789]-?([0-9]{3,4})-?([0-9]{4})$" class="form-control" id="memPhone" name="memPhone" required />
 							    </div>
 							</div>
 							<div class="row mb-3">
 							    <label for="memEmail" class="col-sm-3 col-form-label">이메일</label>
 							    <div class="col-sm-9">
-							        <input type="email" placeholder="email@email.com" pattern="^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$" class="form-control" id="memEmail" name="memEmail" required />
+							        <input type="email" placeholder="email@example.com" pattern="^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$" class="form-control" id="memEmail" name="memEmail" required />
 							    </div>
 							</div>
 							<div class="row mb-3">

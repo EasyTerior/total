@@ -68,9 +68,8 @@ position: relative;
 			</div>
 			<div class="row text-center" style="padding-top:50px;">
 				<form action="" method="POST" enctype="multipart/form-data" class="text-center">
-					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
-					<label for="imgUpload" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width:260px">사진 업로드</label>
-					<input type="file" id="imgUpload" class="invisible" />
+					<label for="imageFile" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width:260px">사진 업로드</label>
+					<input type="file" id="imageFile" class="invisible" id="imageFile" accept="image/*" />
 				</form>
 			</div>
 		</div>
