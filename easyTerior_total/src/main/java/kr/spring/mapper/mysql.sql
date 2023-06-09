@@ -26,6 +26,19 @@ VALUES (@nextIdx, 'admin1', '1234', '관리자', 'admin관리자', '010-0000-000
 
 DELETE FROM member;
 
+-- 스타일 저장
+CREATE TABLE savestyle(
+	styleIdx INT AUTO_INCREMENT,
+	resultClass1 VARCHAR(1000) NOT NULL,
+	resultClass2 VARCHAR(1000) NOT NULL,
+	resultClass1_probability VARCHAR(1000) NOT NULL,
+	resultClass2_probability VARCHAR(1000) NOT NULL,
+	memID VARCHAR(50),
+	PRIMARY KEY(styleIdx)
+);
+
+SELECT * FROM testsavestyle;
+
 -- 게시판 테이블 생성
 CREATE TABLE board(
 	idx INT NOT NULL AUTO_INCREMENT,

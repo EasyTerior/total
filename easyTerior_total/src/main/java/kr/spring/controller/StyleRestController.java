@@ -29,9 +29,8 @@ public class StyleRestController {
 	@Autowired
     private StyleMapper styleMapper;
 
-    @PostMapping("/save")
+	@PostMapping("/save")
     public ResponseEntity<Map<String, String>> saveStyle(@RequestBody Style style) {
-    	
         styleMapper.styleSave(style);
         Map<String, String> result = new HashMap<>();
         result.put("status", "success");
