@@ -35,4 +35,8 @@
 		WHERE memID = #{memID}
 	</select>
 
+	<delete id="memberDelete" parameterType="kr.spring.entity.Member">
+        DELETE FROM member
+        WHERE memID = #{memID}
+    </delete>
 </mapper>

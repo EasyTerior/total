@@ -19,6 +19,8 @@ public interface MemberMapper {
 	public void imageUpload(Member mem);
 
 	public Member getMember(String memID);
+
+	public void memberDelete(Member mem);
 	
 	
 }

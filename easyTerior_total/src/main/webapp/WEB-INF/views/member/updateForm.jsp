@@ -272,6 +272,9 @@ $(document).ready(function() {
 						</form>
 				    </div>
 				</div>
+				<div class="mt-4 row">
+					<a href="leaveForm.do" style="text-decoration: none; color: black">회원탈퇴하기</a>
+				</div>
 			</div>
 		</div>
 	</div>
