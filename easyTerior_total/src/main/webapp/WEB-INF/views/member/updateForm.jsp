@@ -216,14 +216,14 @@ function getColorList(){
 		dataType: "json",
 		success: function(response) {
 			console.log("getColorList success");
-			console.log(response);
+			// console.log(response);
 			// 서버에서 반환된 사용자 정보를 response 변수로 받아 처리
 			// 목록을 가져와서 리스트로 구성
 			var listItems = "";
 			$.each(response, function(index, item) {
-				console.log("item.imgID : "+item.imgID+"\n");
+				// console.log("item.imgID : "+item.imgID+"\n");
 				listItems += "<li class='form-check d-block mb-3'>"
-				listItems += "<input type='checkbox' class='form-check-input' name='selectedColor' id=img'"+item.imgID+"' value='" + item.imgID + "'/>"
+				listItems += "<input type='checkbox' class='form-check-input' name='selectedColor' id=img"+item.imgID+" value='" + item.imgID + "'/>"
 				listItems += "<label class='form-check-label' for='img"+item.imgID+"'><img src='${pageContext.request.contextPath}/resources/images/flask/"+item.fileName+"' value='"+item.imgID+"' class='' name='selectedColor' alt="+item.fileName+" style='width:200px;' /></label>";
 				listItems += "</li>"
 			});
@@ -237,31 +237,49 @@ function getColorList(){
 	});
 }
 
-function deleteColorList(){
-	var selectedColor = [];
-	$("input[type=checkbox]:checked").each(function() {
-		selectedColor.push($(this).val());
+function deleteSelectedColors(){
+	var selectedColors = [];
+	// 선택된 체크박스 값을 추출하여 삭제할 목록에 추가
+	$("input[name='selectedColor']:checked").each(function() {
+	    selectedColors.push($(this).val());
 	});
-	console.log("selectedColor : "+selectedColor);
+	console.log("selectedColors : "+selectedColors);
+	// 삭제할 목록이 비어있는 경우 - modal 경고
+	if (selectedColors.length === 0) {
+		$(".modal-title").text("주의 메세지");
+		$("#checkType .modal-header.card-header").attr("class","modal-header card-header bg-warning");
+		message = "선택된 이미지가 없습니다.";
+		$("#checkMessage").text(message);
+		$("#myModal").modal("show");
+	    console.log("선택된 이미지가 없습니다.");
+	    return;
+	}
 	// 선택된 이미지 항목 삭제 요청
 	$.ajax({
-	    url: "style/deleteColor",
+	    url: "style/deleteColors",
 	    type: "POST",
 	    beforeSend: function(xhr) {
 	      xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
 	    },
 	    contentType: "application/json",
-	    data: JSON.stringify(selectedStyles),
+	    data: JSON.stringify({ selectedColors: selectedColors }),
 	    dataType: "json",
 	    success: function(response) {
-	    	alert("정상적으로 삭제되었습니다.");
+	    	// alert("정상적으로 삭제되었습니다.");
+	    	$(".modal-title").text("성공 메세지");
+			$("#checkType .modal-header.card-header").attr("class","modal-header card-header bg-sucess");
+			message = "정상적으로 삭제되었습니다.";
+			$("#checkMessage").text(message);
+			$("#myModal").modal("show");
 	    	console.log("deleteColor success");
-	    	console.log(response);
+	    	
 	    	getColorList();
 	      	// 삭제 후 처리 로직
 	    },
 	    error: function(xhr, status, error) {
+	    	alert(error);
 			console.log("deleteColor Error - xhr : " + xhr + " | status : " + status + " | error : " + error);
+		    console.error(error);
 	    }
 	});
 	
@@ -412,7 +430,7 @@ $(document).ready(function() {
 				    		</div>
 				    		<div class="row mb-3">
 								<div class="col-sm-9 offset-sm-2 text-center">
-							        <button type="button" onclick='deleteColorList()' class="btn btn-primary">삭제하기</button>
+							        <button type="button" onclick='deleteSelectedColors()' class="btn btn-primary">삭제하기</button>
 							    </div>
 							</div>
 						</form>

@@ -95,29 +95,21 @@ public class StyleRestController {
 	
 	// 색 리스트 가져오기
 	@PostMapping("/getColorList")
-	public List<Color> getColorList(@RequestParam("memID") String memID) {
-	    // 필요한 로직을 수행하여 사용자 정보를 가져옴
-	    // Member memberInfo = memberMapper.getMember(memID);// 사용자 정보를 가져오는 로직 작성
-		try {
-			List<Color> color = colorMapper.getColor(memID);
-			System.out.println("color : "+color);
-			return color;
-		} catch (Exception e) {
-			System.out.println("getStyleList - Exception : "+e);
-			e.printStackTrace();
-			throw new RuntimeException("Failed to get getColorList information");			
-			
-		} 
+	public List<Color> getColorList(@RequestParam("memID") String memID){
+		Member memberInfo = memberMapper.getMember(memID);
+		List<Color> color = colorMapper.getColor(memID);
+		System.out.println("\n\ncolor : "+color);
+		return color;
 	}
 
 	// 이미지 삭제
-	@PostMapping("/deleteColor")
-	public List<Color> deleteColor(@RequestBody int[] imgID, HttpSession session) {
+	@PostMapping("/deleteColors")
+	public List<Color> deleteColors(@RequestBody Map<String, int[]> request, HttpSession session) {
 	    try {
 	        // List<Style> deletedColor = new ArrayList<>();
-	        System.out.println("받아온 imgID 값은 " + Arrays.toString(imgID));
-	        for (int idx : imgID) {
-	        	colorMapper.deleteColor(idx); // 삭제
+	    	int[] selectedColors = request.get("selectedColors");
+	        for (int imgID : selectedColors) {
+	        	colorMapper.deleteColor(imgID); // 삭제
 	        }
 	        Member m  = (Member) session.getAttribute("memResult");
 	        List<Color> color = colorMapper.getColor(m.getMemID());
