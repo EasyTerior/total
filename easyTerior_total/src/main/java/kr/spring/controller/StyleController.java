@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +26,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
@@ -37,12 +40,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
+import kr.spring.entity.Color;
+import kr.spring.entity.Style;
+import kr.spring.mapper.ColorMapper;
 import kr.spring.mapper.MemberMapper;
+import kr.spring.mapper.StyleMapper;
 
 @Controller
 public class StyleController {
 	@Autowired
 	private MemberMapper memberMapper;
+	
+	@Autowired
+	private ColorMapper colorMapper;
+	
+	@Autowired
+	private StyleMapper styleMapper;
 	
 	// 스타일 분석 페이지 이동
 	@RequestMapping("/styleRoom.do")
@@ -51,9 +64,23 @@ public class StyleController {
 	}
 	
 	// 스타일 분석 결과 페이지 이동
-	@RequestMapping("/styleRoomResult.do")
-	public String styleRoomResult() {
-		return "style/styleRoomResult";
+	@RequestMapping("/styleRoomResult/{styleIdx}")
+	public String styleRoomResult(@PathVariable int styleIdx, Model model) {
+	    try {
+	    	System.out.println(styleIdx);
+	        // 스타일 정보를 가져오는 로직 작성
+	        Style style = styleMapper.getStyleByIdx(styleIdx);
+
+	        // 가져온 스타일 정보를 모델에 추가
+	        model.addAttribute("style", style);
+	        System.out.println("리스폰 값은 "+style);
+
+	        return "style/styleRoomResult"; // 상세보기 페이지로 이동할 뷰 이름 리턴
+	    } catch (Exception e) {
+	        System.out.println("styleRoomResult - Exception: " + e);
+	        e.printStackTrace();
+	        throw new RuntimeException("Failed to get style information");
+	    }
 	}
 	
 	// 색 변경하기 페이지 이동
@@ -123,6 +150,8 @@ public class StyleController {
 			    System.out.println("newFile path: " + newFile.getPath());
 			}
 			
+			String originalImg = newFile.getPath();
+			
 			// 파일 이동 및 저장
 			file.renameTo(new File(newFilePathWithNumber));
 
@@ -180,7 +209,7 @@ public class StyleController {
 			                detectionResult = value;
 			            } else if (key.equals("img_path")) {
 			                imgPath = value;
-			            }else {
+			            }else { // image_folder
 			            	imageDir = value;
 			            }
 			        }
@@ -189,14 +218,12 @@ public class StyleController {
 				// 파일 이름 추출
 				String fileName = imgPath.substring(imgPath.lastIndexOf("/") + 1);
 				// 실질적인 프로젝트 이미지 경로
-				// String realImagePath = "C:/eGovFrame-4.0.0/workspace.edu/.metadata/.plugins/org.eclipse.wst.server.core/tmp2/wtpwebapps/easyTerior_total/resources/images/flask/" + fileName;
- 				String realImagePath = "C:/eGovFrame-4.0.0/workspace.edu/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/easyTerior_total/resources/images/flask/" + fileName;
+				String realImagePath = "C:/eGovFrame-4.0.0/workspace.edu/.metadata/.plugins/org.eclipse.wst.server.core/tmp2/wtpwebapps/easyTerior_total/resources/images/flask/" + fileName;
+ 				// String realImagePath = "C:/eGovFrame-4.0.0/workspace.edu/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/easyTerior_total/resources/images/flask/" + fileName;
 				// 파일 이동
 				Path sourcePath = Paths.get(imgPath);
 				Path targetPath = Paths.get(realImagePath);
 				Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-
-				String originalImg = realImagePath.replace("_resized", "");
 				
 				// detectionResult 를 JSON 형태로 저장하기
 				// 중복 제거
@@ -218,7 +245,8 @@ public class StyleController {
 			    // JSON 데이터를 세션에 저장
 				// 추출한 detection_result와 img_path 값을 세션에 저장
 				if (detectionResult != null && imgPath != null) {
-				    session.setAttribute("detectionResult", resultList); // 실질 검출된 중복 제외 객체 종류
+					session.setAttribute("detectionResult", detectionResult); // 검출된 전체 목록
+				    session.setAttribute("resultList", resultList); // 실질 검출된 중복 제외 객체 종류
 				    session.setAttribute("objectList", objectList); // 전체 객체 종류
 				    session.setAttribute("imgPath", realImagePath); // flask에서 처리된 이미지
 				    session.setAttribute("originalImg", originalImg); // 사용자가 업로드 한 원본 이미지 경로
@@ -227,7 +255,9 @@ public class StyleController {
 			    session.setAttribute("flaskFullResponse", jsonResponse);
 			    System.out.println("\n\nresponseEntity Success - flaskResponse : \n"+jsonResponse);
 			    System.out.println("detectionResult : "+detectionResult);
+			    session.setAttribute("resultList", resultList); // 실질 검출된 중복 제외 객체 종류
 			    System.out.println("imgPath : "+realImagePath);
+			    System.out.println("originalImg : "+originalImg);
 			    System.out.println("imageDir : "+imageDir);
 
 			    // 성공 후 colorSelect.do로 이동
@@ -250,17 +280,17 @@ public class StyleController {
 	
 	@RequestMapping("/colorSelect.do")
 	public String colorSelect(HttpSession session) { // @RequestParam("detection_result") String detectionResult, @RequestParam("img_path") String imgPath, HttpSession session
-		System.out.println("colorSelect called");
-	    System.out.println("detectionResult : "+session.getAttribute("detectionResult"));
-	    System.out.println("imgPath : "+session.getAttribute("imgPath"));
+//		System.out.println("colorSelect called");
+//	    System.out.println("detectionResult : "+session.getAttribute("detectionResult"));
+//	    System.out.println("imgPath : "+session.getAttribute("imgPath"));
 	    return "style/colorSelect";
 	}
 	
 	@RequestMapping("/colorSelectForm.do")
 	public String colorSelectForm(@RequestParam("selectedObjectList") List<String> selectedObjectList, @RequestParam("selectedColorValue") String selectedColorValue, HttpSession session, RedirectAttributes rttr) {
 		System.out.println("\n\ncolorSelectForm called");
-		System.out.println("selectedObjectList : "+selectedObjectList);
-		System.out.println("selectedColorValue : "+selectedColorValue);
+//		System.out.println("selectedObjectList : "+selectedObjectList);
+//		System.out.println("selectedColorValue : "+selectedColorValue);
 		try {
 			// CSRF 토큰 가져오기
 			String csrfToken = (String) session.getAttribute("csrfToken");
@@ -268,9 +298,13 @@ public class StyleController {
 
 		    // 사용자가 업로드한 이미지 경로 가져오기
 		    String originalImg = (String) session.getAttribute("originalImg");
-		    
+		    System.out.println("originalImg : " + originalImg);
+
 		    // flask에서 작업했던 exp 폴더 경로 가져오기
 		    String imageDir = (String) session.getAttribute("imageDir");
+		    
+		    // 검출되었던 전체 목록 가져오기
+		    Object detectionResult = session.getAttribute("detectionResult");
 		    
 		    // RestTemplate를 통해 flask의 "http://127.0.0.1:5000/color_change"로 request를 보내기
 		    HttpHeaders headers = new HttpHeaders();
@@ -283,6 +317,7 @@ public class StyleController {
 	        body.addAll("selectedObjectList", selectedObjectList);
 	        body.add("selectedColorValue", selectedColorValue);
 	        body.add("imageDir", imageDir);
+	        body.add("detectionResult", detectionResult);
 
 		    //HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
 	        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
@@ -304,61 +339,51 @@ public class StyleController {
 		    	// 성공적인 응답 처리
 				String jsonResponse = responseEntity.getBody();
 				// URL 디코딩 및 파싱하여 detection_result와 img_path 값을 추출
-				String img_data = null;
-				String naver_img = null;
-				String final_img = null;
-				String original_img = null;
 				try {
 					jsonResponse = URLDecoder.decode(jsonResponse, "UTF-8");
-					String[] queryParams = jsonResponse.split("\\?")[1].split("&");
-					for (String param : queryParams) {
-				        String[] keyValue = param.split("=");
-				        if (keyValue.length == 2) {
-				            String key = keyValue[0];
-				            String value = keyValue[1];
-				            
-				            if (key.equals("img_data")) {
-				            	img_data = value;
-				            } else if (key.equals("image_urls")) {
-				            	naver_img = value;
-				            }else if (key.equals("final_img")) {
-				            	final_img = value;
-				            }else if (key.equals("original_img")) {
-				            	original_img = value;
-				            }
-				        }
-				    }
+					String[] ResponseSplit = jsonResponse.split("\\?");
+					jsonResponse = ResponseSplit[1];
+					System.out.println("\n\njsonResponse : "+jsonResponse+"\n\n");
+					// 분리된 파라미터들을 저장할 Map 생성
+					Map<String, String> params = new HashMap<>();
+
+					// "&"로 분리
+					String[] paramPairs = jsonResponse.split("&");
+					System.out.println();
+					// 각 파라미터에 대해 "="로 분리하여 Map에 저장
+					for (String paramPair : paramPairs) {
+					    String[] keyValue = paramPair.split("=");
+
+					    if (keyValue.length == 2) {
+					        String key = keyValue[0];
+					        String value = keyValue[1];
+					        params.put(key, value);
+					    }
+					}
+					String img_data = params.get("img_data");
+					String naver_urls = params.get("naver_urls");
+					String final_img = params.get("final_img");
+					String original_img = params.get("original_img");
+					String real_color = params.get("real_color");
+
 					System.out.println("\n\nSuccessful jsonResponse");
 					System.out.println("img_data : "+img_data);
-					System.out.println("naver_img"+naver_img);
-					System.out.println("final_img"+final_img);
-					System.out.println("original_img"+original_img);
-					
-					// 파일을 이클립스에서 인식하도록 옮기기
-					// 파일 이름 추출
-					String fileName = final_img.substring(final_img.lastIndexOf("/") + 1);
-					// 실질적인 프로젝트 이미지 경로
-					// String realImagePath = "C:/eGovFrame-4.0.0/workspace.edu/.metadata/.plugins/org.eclipse.wst.server.core/tmp2/wtpwebapps/easyTerior_total/resources/images/flask/" + fileName;
-	 				String realImagePath = "C:/eGovFrame-4.0.0/workspace.edu/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/easyTerior_total/resources/images/flask/" + fileName;
-					// 파일 이동
-					Path sourcePath = Paths.get(final_img);
-					Path targetPath = Paths.get(realImagePath);
-					Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING); // 복사해서 이동
+					System.out.println("naver_urls : "+naver_urls);
+					System.out.println("final_img : "+final_img);
+					System.out.println("original_img : "+original_img);
+					System.out.println("real_color : "+real_color);
 
-					
-					// 추출한 detection_result와 img_path 값을 세션에 저장
 					if (jsonResponse != null) {
 					    session.setAttribute("img_data", img_data); // 색깔 정보
-					    session.setAttribute("naver_img", naver_img); // 네이버 쇼핑 API 결과
+					    session.setAttribute("naver_urls", naver_urls); // 네이버 쇼핑 API 결과
 					    session.setAttribute("final_img", final_img); // flask에서 처리된 이미지
 					    session.setAttribute("original_img", original_img); // 사용자가 업로드 한 원본 이미지 경로
-					    
+					    session.setAttribute("real_color", real_color); // 처리한 색깔
 					}
-					
 					
 			    	return "redirect:/colorChangeResult.do";
 				} catch (Exception e) {
-					System.out.println("colorSelectForm Exception called");
+					System.out.println("colorSelectForm jsonResponse Exception called : "+e);
 					e.printStackTrace();
 					rttr.addFlashAttribute("msgType", "실패 메세지");
 		            rttr.addFlashAttribute("msg", "이미지 변화에 실패하였습니다. jsonResponse 에서 문제가 있습니다."); 
@@ -381,6 +406,17 @@ public class StyleController {
 	
 	@RequestMapping("/colorChangeResult.do")
 	public String colorChangeResult() {
+		System.out.println("\n\ncolorChangeResult called");
 		return "style/colorChangeResult";
 	}
+	
+	// saveColorResult.do 결과에 대해 저장하기. colorMapper
+	@RequestMapping("/saveColorResult.do")
+	public String saveColorResult(Color color, RedirectAttributes rttr) {
+		colorMapper.saveColor(color);
+		rttr.addFlashAttribute("msgType", "성공 메세지");
+        rttr.addFlashAttribute("msg", "성공적으로 저장되었습니다. 마이페이지에서 저장된 사진을 확인할 수 있습니다!");
+		return "redirect:/";
+	}
+	
 }

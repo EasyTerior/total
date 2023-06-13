@@ -12,28 +12,30 @@
 <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
 rel="stylesheet" /><!-- icons -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+
 <!-- bxSlider Javascript file -->
 <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
 <!-- bxSlider CSS file -->
-    <link href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css" rel="stylesheet" />
 <style>
 body, main, section {
 position: relative;
+}
 /* hec */
 .pline{
-	font-size: 20px;  /* 글자 크기 설정 */
-	font-weight:bold;
-	text-align:center;
-	margin-top:20px;
-	margin-bottom:20px;
-}
-
+font-size: 20px;  /* 글자 크기 설정 */
+font-weight:bold;
+text-align:center;
+margin-top:20px;
+margin-bottom:20px;
 }
 </style>
 <script type="text/javascript">
 	var csrfHeaderName = "${_csrf.headerName}";
 	var csrfTokenValue = "${_csrf.token}";
-	var slider;	
+	var slider;
+	var memID = "${memResult.memID}"
+	var styleImg;
 
 	$(document).ready(function(){
 		// 회원가입 후 modal 표시
@@ -46,13 +48,18 @@ position: relative;
 		
 		// 이미지 파일 선택 시
 	    $("#imageFile").change(function() {
-	    	var formData = new FormData();
-	      	formData.append("file", $("#imageFile")[0].files[0]);
+			var file = $("#imageFile")[0].files[0];
+			var formData = new FormData();
+			formData.append("file", file);
+			formData.append("memID", memID);
 	      	// Ajax 통신
 	      	$.ajax({
 		        url: "http://localhost:5000/upload",
 		        type: "POST",
 		        data: formData,
+		        beforeSend: function(xhr) {
+	                xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+	            },
 		        contentType: false,
 		        processData: false,
 		        success: function(result) {
@@ -66,71 +73,84 @@ position: relative;
 	        		console.log(error);
 	        	}
         	});
-    	});
-	    // 결과 표시 함수
-	    function displayResult(result) {
-	      // 결과 값을 표시하는 로직 작성
-	      console.log(result);
-	      var uploadedImage = document.getElementById("uploadedImage");
-	      uploadedImage.src = URL.createObjectURL($("#imageFile")[0].files[0]);
-	      $("#resultType").text(result[0].class+" 스타일");
-	      
-	      // 쇼핑API 함수 호출
-	      callShoppingAPI(result);
-	      $("#resultText1-class").text(result[0].class);
-	      $("#resultText1-probability").text((result[0].probability * 100).toFixed(2) + "% 일치");
-	      $("#resultText2-class").text(result[1].class);
-	      $("#resultText2-probability").text((result[1].probability * 100).toFixed(2) + "% 일치");
-	      $("#resultType-Explanation").text(result[0].explanation);
-	      
-	      $("#result").css("display", "block");
-	      $("#base").css("display", "none");
-	    }
-	
-	    function callShoppingAPI(result) {
-	      var style = result[0].class;
-          var image_urls = result[2].image_urls;
-          console.log(image_urls);
-          var image_src = result[2].image_src;
-          console.log(image_src);
-			$('#bxslider').empty();
-              for(var i = 0; i < image_urls.length; i++) {
-                  $('#bxslider').append('<a href="'+image_urls[i]+'"><img src="'+image_src[i]+'" width="220px" height="220px"></a>');
-              }
-              // 이미지 로딩을 위해 약간의 시간을 기다립니다.
-              setTimeout(function() {
-           	    if (slider) {
-           	        slider.destroySlider(); // 기존 슬라이더가 존재하는 경우 파괴합니다.
-           	    }
-           	    // 새로운 슬라이더를 생성하고 인스턴스를 저장합니다.
-           	    slider = $('#bxslider').bxSlider({
-           	        minSlides: 2,
-           	        maxSlides: 100,
-           	        moveSlides: 2,
-           	        slideWidth: 300,
-           	        slideMargin: 2,
-           	        mode: 'horizontal',
-           	        auto: true,
-           	        pause: 3000,
-           	        speed: 1000
-           	    });
-           	    console.log(slider);
-           	}, 500);
-          }
-		  
-		// 결과 숨기고 다시 분석 테스트 div 열기
-	    function showBase() {
-	        $("#result").css("display", "none");
-	        $("#base").css("display", "block");
-	    }
+	    });
 		
-	    function saveStyle() {
-		    var memID = "${memResult.memID}";
-		    console.log(memID);
-	        if (memID == "") {
-	            alert("로그인 해주세요.");
-	        }
-	        else{
+	});
+	
+	
+	// 결과 표시 함수
+    function displayResult(result) {
+		// 결과 값을 표시하는 로직 작성
+      	console.log(result);
+		var uploadedImage = document.getElementById("uploadedImage");
+		uploadedImage.src = URL.createObjectURL($("#imageFile")[0].files[0]);
+		$("#resultType").text(result[0].class+" 스타일");
+
+		// 쇼핑API 함수 호출
+		callShoppingAPI(result);
+		$("#resultText1-class").text(result[0].class);
+		$("#resultText1-probability").text((result[0].probability * 100).toFixed(2) + "% 일치");
+		$("#resultText2-class").text(result[1].class);
+		$("#resultText2-probability").text((result[1].probability * 100).toFixed(2) + "% 일치");
+		$("#resultType-Explanation").text(result[0].explanation);
+
+		$("#result").css("display", "block");
+		$("#base").css("display", "none");
+      	if(memID!=""){
+	      	styleImg=result[3].img_path;
+	    }
+    }
+	
+	// 
+	function callShoppingAPI(result) {
+		var style = result[0].class;
+		var image_urls = result[2].image_urls;
+		console.log(image_urls);
+		var image_src = result[2].image_src;
+		console.log(image_src);
+		$('#bxslider').empty();
+		for(var i = 0; i < image_urls.length; i++) {
+			$('#bxslider').append('<a href="'+image_urls[i]+'"><img src="'+image_src[i]+'" width="220px" height="220px"></a>');
+		}
+		// 이미지 로딩을 위해 약간의 시간을 기다립니다.
+		setTimeout(function() {
+			if (slider) {
+				slider.destroySlider(); // 기존 슬라이더가 존재하는 경우 파괴합니다.
+			}
+	        // 새로운 슬라이더를 생성하고 인스턴스를 저장합니다.
+	        slider = $('#bxslider').bxSlider({
+	        	minSlides: 2,
+	        	maxSlides: 100,
+	        	moveSlides: 1,
+	        	slideWidth: 300,
+	        	slideMargin: 2,
+	        	mode: 'horizontal',
+	        	auto: true,
+	        	pause: 3000,
+	        	speed: 1000
+	       	});
+	        console.log(slider);
+        }, 500);
+	}
+	
+	// 결과 숨기고 다시 분석 테스트 div 열기
+    function showBase() {
+        $("#result").css("display", "none");
+        $("#base").css("display", "block");
+    }
+	
+	// 
+	function saveStyle() {
+	    var memID = "${memResult.memID}";
+	    console.log(memID);
+        if (memID == "") {
+            // alert("로그인 해주세요.");
+        	$(".modal-title").text("실패 메세지");
+        	$("#checkType .modal-header.card-header").attr("class", "modal-header card-header bg-danger");
+        	$("#checkMessage").text("로그인이 되어있지 않아 사진을 저장할 수 없습니다. 로그인 한 사용자만이 사진을 저장할 수 있습니다!");
+        	$("#myModal").modal("show");
+        }
+        else{
 	        var resultClass1 = $("#resultText1-class").text();
 	        //console.log(resultClass1);
 	        var resultClass2 = $("#resultText2-class").text();
@@ -139,19 +159,20 @@ position: relative;
 	        //console.log(resultClass1_probability);
 	        var resultClass2_probability = $("#resultText2-probability").text();
 	        //console.log(resultClass2_probability);
-	        
-	        
-	        }
+	        console.log(styleImg);
+	        // else 중괄호 닫기 체크
+	
 			var data = {
 			    resultClass1: resultClass1,
 			    resultClass2: resultClass2,
 			    resultClass1_probability: resultClass1_probability,
 			    resultClass2_probability: resultClass2_probability,
+			    styleImg:styleImg, //체크
 			    memID: memID
 			};
-	        console.log(data);
-	        
-	        // ajax 비동기 통신
+        	console.log(data);
+
+        	// ajax 비동기 통신
 	        $.ajax({
 	            url: "style/save",
 	            type: "post",
@@ -172,10 +193,10 @@ position: relative;
 	                console.log(error);
 	                alert("저장에 실패했습니다.");
 	            }
-	        });
-	    }
-		
-	});
+        	});
+        }
+    }
+	
 </script>
 <title>EasyTerior</title>
 </head>
@@ -220,40 +241,45 @@ position: relative;
 			</div>
 		</div>
 	</section>
-	<section id="result" class="fixed-top container-fluid overflow-auto h-100" style="margin:137px 0 56px 0;padding:0 0 56px 100px; display: none;">
+	<section id="result" class="fixed-top container-fluid overflow-auto h-100" style="margin:137px 0 56px 0;padding:0 0 56px 100px; display:none;">
 		<h1 class="text-center mt-4 mb-3">스타일 분석 결과</h1>
 		<!-- 실질 컨텐츠 위치 -->
 		<div class="container-fluid" style="min-height:100vh; margin-bottom:200px;">
 			<h3>
 				<span class="d-block mt-5 mb-3 fs-6 text-center">당신의 대표 인테리어는?</span>
-				<strong id="resultType" class="d-block mb-5 fw-bold fs-2 text-center">스칸디나비아 스타일</strong>
+				<strong id="resultType" class="d-block mb-5 fw-bold fs-2 text-center"></strong>
 			</h3>
-
-				<div class="row m-auto text-center">
-					<div class="col">
+			<div class="row m-auto text-center">
+				<div class="col">
 						<img id="uploadedImage" src="${ contextPath }/resources/images/common/styleRoom_Result_image_1.png"
 							alt="Interior Image" class="img-fluid" style="width:80%;">
+				</div>
+				<div class="col-sm-3">
+					<h5 class="fw-bold fs-6 text-center">&lt;대표 스타일&gt;</h5>
+					<strong class="d-block mt-3 mb-4 fs-5">
+						<span id="resultText1-class" class="bg-primary d-block"></span><span id="resultText1-probability"></span>
+					</strong>
+					<strong class="d-block mt-3 mb-4 fs-6">
+						<span id="resultText2-class" class="bg-info d-block"></span>
+						<span id="resultText2-probability"></span>
+					</strong>
+				</div>
+			</div>
+			<div id="resultType-Explanation" class="row mt-4 mb-4 ps-2 text-center" style="width:60%; margin:auto;"></div>
+			<div class="row mt-4 mb-4">
+				<div class="col text-center">
+				<button onclick="showBase()" class="btn btn-success ps-2 fw-bold" style="width: 260px;">다시 해보기</button>
+				<button onclick="saveStyle()" class="btn btn-primary ps-2 fw-bold" style="width: 260px;">스타일 저장하기</button>
+				</div>
+			</div>
+			<div class="row mb-4">
+				<div class="col text-center">
+					<p class="pline">이 스타일과 관련된 인테리어 아이템을 추천해드릴게요!</p>
+					<div>
+						<div id="bxslider"></div>
 					</div>
-					<div class="col-sm-3">
-						<h5 class="fw-bold fs-6 text-center">&lt;대표 스타일&gt;</h5>
-						<strong class="d-block mt-3 mb-4 fs-5"><span id="resultText1-class" class="bg-primary d-block">스칸디나비아</span><span id="resultText1-probability"> 96% 일치 </span></strong>
-						<strong class="d-block mt-3 mb-4 fs-6"><span id="resultText2-class" class="bg-info d-block">모던</span><span id="resultText2-probability"> 72% 일치 </span></strong>
-					</div>
 				</div>
-				<div id="resultType-Explanation" class="row mt-4 mb-4 ps-2 text-center" style="width:60%; margin:auto;">스칸디나비아 스타일은 스칸디나비아 지역의 디자인 철학으로, 간결하고 심플한 디자인 원칙을 따릅니다. 밝고 넓은 공간을 선호하며, 자연 소재인 목재와 플랜트를 활용하여 자연스러운 분위기를 조성합니다. 중립적인 색상과 자연광을 즐기며, 기능성과 실용성을 중시하여 실용적이면서도 아름다운 공간을 만들어냅니다.</div>
-				<div class="row mt-4 mb-4">
-					<div class="col text-center">
-					<button onclick="showBase()" class="btn btn-success ps-2 fw-bold" style="width: 260px;">다시 해보기</button>
-					<button onclick="saveStyle()" class="btn btn-primary ps-2 fw-bold" style="width: 260px;">스타일 저장하기</button>
-					</div>
-				</div>
-			<br>
-				<p class="pline">이 스타일과 관련된 인테리어 아이템을 추천해드릴게요!</p>
-				<br>
-				<div>
-				<div id="bxslider">
-				</div>
-				</div>
+			</div>
 		</div>
 	</section>
 	<jsp:include page="../common/footer.jsp"></jsp:include>

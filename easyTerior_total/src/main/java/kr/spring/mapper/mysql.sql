@@ -27,17 +27,29 @@ VALUES (@nextIdx, 'admin1', '1234', '관리자', 'admin관리자', '010-0000-000
 DELETE FROM member;
 
 -- 스타일 저장
-CREATE TABLE savestyle(
-	styleIdx INT AUTO_INCREMENT,
+CREATE TABLE style(
+	styleIdx INT PRIMARY KEY AUTO_INCREMENT,
 	resultClass1 VARCHAR(1000) NOT NULL,
 	resultClass2 VARCHAR(1000) NOT NULL,
 	resultClass1_probability VARCHAR(1000) NOT NULL,
 	resultClass2_probability VARCHAR(1000) NOT NULL,
-	memID VARCHAR(50),
-	PRIMARY KEY(styleIdx)
+	styleImg VARCHAR(1000),
+	memID VARCHAR(50) NOT NULL,
+	FOREIGN KEY (memID) REFERENCES member (memID)
 );
 
-SELECT * FROM testsavestyle;
+SELECT * FROM style;
+
+-- 색깔 이미지 저장
+CREATE TABLE color (
+  imgID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  fileName VARCHAR(255) NOT NULL,
+  hexVal VARCHAR(100),
+  memID VARCHAR(50) NOT NULL,
+  FOREIGN KEY (memID) REFERENCES member (memID)
+);
+-- DROP TABLE color;
+SELECT * FROM color;
 
 -- 게시판 테이블 생성
 CREATE TABLE board(

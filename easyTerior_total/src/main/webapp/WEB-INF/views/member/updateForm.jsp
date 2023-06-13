@@ -34,6 +34,27 @@ function serverMsg(){
 	}
 }
 
+// 성공 메세지
+function showSuccessMessage(message){
+	$(".modal-title").text("성공 메세지");
+	$("#checkType .modal-header.card-header").attr("class", "modal-header card-header bg-success");
+	$("#checkMessage").text(message);
+	$("#myModal").modal("show");
+}
+
+// 비밀번호 비교하기
+function passwordCheck(){
+	var memPassword1 = $("#memPassword1").val();
+	var memPassword2 = $("#memPassword2").val();
+	if(memPassword1 != memPassword2){
+		$("#passMessage").text("비밀번호가 서로 일치하지 않습니다.");
+		$("#passMessage").css("color","red");
+	}else {
+		$("#passMessage").text("비밀번호가 일치 합니다.");
+		$("#passMessage").css("color","blue");
+	}
+}
+
 //사용자 정보 가져오기
 function getUserInfo() {
 	$.ajax({
@@ -55,8 +76,8 @@ function getUserInfo() {
 			$("#oldAddress").val(response.memAddress);
 		},
 		error: function(xhr, status, error) {
-			alert("Error - xhr : "+xhr+" | status : "+status+" | error : "+error);
-			console.error(error);
+			// alert("Error - xhr : "+xhr+" | status : "+status+" | error : "+error);
+			console.error("getUserInfo : "+error);
 		}
 	});
 }
@@ -85,7 +106,7 @@ function addressFill(){
 	
 }
 
-// 정보 수정 비동기
+//정보 수정 비동기
 function updateInfo(event){
     // 1. 클릭된 버튼이 속한 form에서 정보 가져오기
     var formID = $(event.target).closest('form').attr('id');
@@ -98,6 +119,9 @@ function updateInfo(event){
     // 2. 세션에서 가져온 정보를 dataObj에 추가하기
     dataObj["memID"] = "${memResult.memID}";
     dataObj["memName"] = "${memResult.memName}";
+    if(dataObj["memPassword1"] == dataObj["memPassword2"]){
+    	dataObj["memPassword"] = dataObj["memPassword1"];
+    }
     
     $.ajax({ // js에서 객체 표현 방식 -> json
     	url: "member/"+formID, // personal : 개인정보, password : 비밀번호
@@ -110,30 +134,162 @@ function updateInfo(event){
 		dataType: "json",
 		success: function(response) {
             console.log("update success");
+            showSuccessMessage("회원정보가 수정되었습니다.");
             resetForm()
         },
         error: function(xhr, status, error) {
-			alert("Error - xhr : "+xhr+" | status : "+status+" | error : "+error);
-			console.error(error);
+			// alert("Error - xhr : "+xhr+" | status : "+status+" | error : "+error);
+			console.error("updateInfo : "+error);
 		}
     });
     
+}
+
+// 스타일 목록 불러오기
+function getStyleList() {
+	$.ajax({
+		url: "style/getStyleInfo",
+		type: "POST",
+		beforeSend : function(xhr){ // xhr 에 담아서 보냄
+			xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+		},
+		data: {"memID":"${memResult.memID}"},
+		dataType: "json",
+		success: function(response) {
+			console.log("getStyleList success");
+			console.log(response);
+			// 서버에서 반환된 사용자 정보를 response 변수로 받아 처리
+			// 목록을 가져와서 리스트로 구성
+			var listItems = "";
+			$.each(response, function(index, item) {
+				listItems += "<li><input type='checkbox' name='selectedStyles' value='" + item.styleIdx + "'/><a href='styleRoomResult/" + item.styleIdx + "'>" + item.resultClass1 + " 스타일 " + item.resultClass1_probability + "</a></li>";
+			});
+		    // 리스트를 styleImg 요소에 추가
+			$("#styleImg").html("<ul>" + listItems + "</ul>");
+		},
+		error: function(xhr, status, error) {
+			console.log("getStyleList Error - xhr : "+xhr+" | status : "+status+" | error : "+error);
+			console.error(error);
+		}
+	});
+}
+
+// 선택한 목록 삭제
+function deleteSelectedStyles() {
+	var selectedStyles = [];
+	$("input[type=checkbox]:checked").each(function() {
+		selectedStyles.push($(this).val());
+	});
+	console.log(selectedStyles);
+	// 선택된 스타일 항목 삭제 요청
+	$.ajax({
+	    url: "style/deleteSelectedStyles",
+	    type: "POST",
+	    beforeSend: function(xhr) {
+	      xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+	    },
+	    contentType: "application/json",
+	    data: JSON.stringify(selectedStyles),
+	    dataType: "json",
+	    success: function(response) {
+	    	alert("정상적으로 삭제되었습니다.");
+	    	console.log("deleteSelectedStyles success");
+	    	console.log(response);
+	    	getStyleList();
+	      	// 삭제 후 처리 로직
+	    },
+	    error: function(xhr, status, error) {
+			console.log("deleteSelectedStyles Error - xhr : " + xhr + " | status : " + status + " | error : " + error);
+	    }
+	});
+}
+
+// 이미지 목록 불러옥
+function getColorList(){
+	$.ajax({
+		url: "style/getColorList",
+		type: "POST",
+		beforeSend : function(xhr){ // xhr 에 담아서 보냄
+			xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+		},
+		data: {"memID":"${memResult.memID}"},
+		dataType: "json",
+		success: function(response) {
+			console.log("getColorList success");
+			console.log(response);
+			// 서버에서 반환된 사용자 정보를 response 변수로 받아 처리
+			// 목록을 가져와서 리스트로 구성
+			var listItems = "";
+			$.each(response, function(index, item) {
+				console.log("item.imgID : "+item.imgID+"\n");
+				listItems += "<li class='form-check d-block mb-3'>"
+				listItems += "<input type='checkbox' class='form-check-input' name='selectedColor' id=img'"+item.imgID+"' value='" + item.imgID + "'/>"
+				listItems += "<label class='form-check-label' for='img"+item.imgID+"'><img src='${pageContext.request.contextPath}/resources/images/flask/"+item.fileName+"' value='"+item.imgID+"' class='' name='selectedColor' alt="+item.fileName+" style='width:200px;' /></label>";
+				listItems += "</li>"
+			});
+		    // 리스트를 styleImg 요소에 추가
+			$("#colorImg").html("<ul>" + listItems + "</ul>");
+		},
+		error: function(xhr, status, error) {
+			console.log("getColorList Error - xhr : "+xhr+" | status : "+status+" | error : "+error);
+			console.error(error);
+		}
+	});
+}
+
+function deleteColorList(){
+	var selectedColor = [];
+	$("input[type=checkbox]:checked").each(function() {
+		selectedColor.push($(this).val());
+	});
+	console.log("selectedColor : "+selectedColor);
+	// 선택된 이미지 항목 삭제 요청
+	$.ajax({
+	    url: "style/deleteColor",
+	    type: "POST",
+	    beforeSend: function(xhr) {
+	      xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+	    },
+	    contentType: "application/json",
+	    data: JSON.stringify(selectedStyles),
+	    dataType: "json",
+	    success: function(response) {
+	    	alert("정상적으로 삭제되었습니다.");
+	    	console.log("deleteColor success");
+	    	console.log(response);
+	    	getColorList();
+	      	// 삭제 후 처리 로직
+	    },
+	    error: function(xhr, status, error) {
+			console.log("deleteColor Error - xhr : " + xhr + " | status : " + status + " | error : " + error);
+	    }
+	});
+	
 }
 
 $(document).ready(function() {
 	// 서버 메세지 전달 : msgType
 	serverMsg();
 	resetForm();
-	// getUserInfo();
+	getStyleList();
+	getColorList();
 	
 	// li 클릭 시 해당하는 formContainer 표시
 	$("ul.updateList li").click(function() {
 		var idxNum = $(this).index() + 1;
+		$("ul.updateList li").removeClass("on").removeClass("fw-bold");
+		$(this).addClass("on");
+		$(".updateList .on").addClass("fw-bold");
 		$(".formContainer").hide();
+		getUserInfo()
+		getStyleList()
+		getColorList()
 		$("#formContainer" + idxNum).show();
+		$("#memPassword1").val("");
+		$("#memPassword2").val("");
 	});
 
-	alert('document ready');
+	// alert("document ready");
 	
 });
 </script>
@@ -250,12 +406,13 @@ $(document).ready(function() {
 					</div>
 				    <div id="formContainer3" class="container m-auto formContainer" style="width:90%;">
 				    	<form id="savedImages" name="savedImages">
-				    	<legend class="mt-4 mb-3 text-center fw-bold">저장한 이미지 수정하기</legend>
-				    	
+				    	<legend class="mt-4 mb-3 text-center fw-bold">저장한 이미지 수정하기</legend>				    	
+				    		<div class="row">
+				    			<div id="colorImg" class="col"></div>
+				    		</div>
 				    		<div class="row mb-3">
 								<div class="col-sm-9 offset-sm-2 text-center">
-							        <button type="button" onclick='updateInfo(event)' class="btn btn-primary">수정하기</button>
-							        <button type="reset" class="btn btn-warning">취소하기</button>
+							        <button type="button" onclick='deleteColorList()' class="btn btn-primary">삭제하기</button>
 							    </div>
 							</div>
 						</form>
@@ -263,11 +420,11 @@ $(document).ready(function() {
 				    <div id="formContainer4" class="container m-auto formContainer" style="width:90%;">
 				    	<form id="savedStyle" name="savedStyle">
 				    	<legend class="mt-4 mb-3 text-center fw-bold">저장한 스타일 확인하기</legend>
-				    		<div class="row mb-3">
+					    	<div class="row mb-3">
+					    		<div id="styleImg" class="row"></div>
 								<div class="col-sm-9 offset-sm-2 text-center">
-							        <button type="button" onclick='updateInfo(event)' class="btn btn-primary">수정하기</button>
-							        <button type="reset" class="btn btn-warning">취소하기</button>
-							    </div>
+									<button type="button" onclick='deleteSelectedStyles()' class="btn btn-primary">삭제하기</button>
+								</div>
 							</div>
 						</form>
 				    </div>

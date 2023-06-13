@@ -1,6 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%-- JSTL --%>
 <c:set var="contextPath" value="${ pageContext.request.contextPath }" />
+<%
+    String contextPath = (String) pageContext.getAttribute("contextPath");  // contextPath 가져오기
+    String imagePath = (String) session.getAttribute("final_img");  // session에서 이미지 경로 가져오기
+
+    // 파일명 추출
+    String filename = imagePath.substring(imagePath.lastIndexOf("/") + 1);  // 파일명 추출
+
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,6 +26,34 @@ position: relative;
 }
 </style>
 <script type="text/javascript">
+	// rgbToHex
+	function rgbToHex(r, g, b) {
+	  var red = r.toString(16).padStart(2, '0');
+	  var green = g.toString(16).padStart(2, '0');
+	  var blue = b.toString(16).padStart(2, '0');
+	  return '#' + red + green + blue;
+	}
+	
+	// 로그인 여부 체크
+	function chkLoginUser(){
+		// memID 값 확인
+        var memID = $("#memID").val();
+     // memID 값이 비어있는 경우 로그인이 되어있지 않으므로 로그인 창으로 이동하도록 안내
+        if (memID === "") {
+        	$(".modal-title").text("실패 메세지");
+        	$("#checkType .modal-header.card-header").attr("class", "modal-header card-header bg-danger");
+        	$("#checkMessage").text("로그인이 되어있지 않아 사진을 저장할 수 없습니다. 로그인 한 사용자만이 사진을 저장할 수 있습니다!");
+        	$("#myModal").modal("show");
+        	event.preventDefault(); // form 제출 막기
+        }else{
+        	$(".modal-title").text("성공 메세지");
+        	$("#checkType .modal-header.card-header").attr("class", "modal-header card-header bg-success");
+        	$("#checkMessage").text("성공적으로 사진을 저장했습니다.");
+        	$("#myModal").modal("show");
+        	$("#saveColorResult").submit(); // form 제출
+        }
+	}
+
 	$(document).ready(function(){
 		// 회원가입 후 modal 표시
 		if(${ not empty msgType}){
@@ -26,7 +62,21 @@ position: relative;
 			}
 			$("#myModal").modal("show");
 		}
+		bgr_color = JSON.parse("${img_data}");
+		console.log("bgr_color : "+bgr_color+" | type : "+typeof(bgr_color)+" bgr_color[0] : "+bgr_color[0]+" | type : "+typeof(bgr_color[0]));
+		// 각 값을 숫자로 변환하여 b, g, r 변수에 저장
+		let b = parseInt(bgr_color[0]);
+		let g = parseInt(bgr_color[1]);
+		let r = parseInt(bgr_color[2]);
 		
+		$(".rgb_r").text(r);
+		$(".rgb_g").text(g);
+		$(".rgb_b").text(b);
+		console.log("img_data : "+${img_data}+ " | type : "+typeof(${img_data}));
+		console.log("r: "+r+" | g : "+g+" | b : "+b+" | type b : "+typeof(b)+" | type g : "+typeof(g)+" | type r : "+typeof(r));
+		
+		$(".hex_value").text(rgbToHex(r, g, b));
+		$("#hexVal").val(rgbToHex(r, g, b));
 	});
 </script>
 <title>EasyTerior</title>
@@ -36,34 +86,34 @@ position: relative;
 	<jsp:include page="../common/header.jsp"></jsp:include>
 	<jsp:include page="../common/submenu.jsp"></jsp:include>
 	<section class="fixed-top container-fluid overflow-auto h-100" style="margin:137px 0 56px 0;padding:0 0 56px 100px;">
-		<h1 class="text-center mt-4 mb-3">소품 색 변경하기</h1>
+		<h1 class="text-center mt-4 mb-3">소품 색 변경 결과</h1>
 		<!-- 실질 컨텐츠 위치 -->
 		<div class="container-fluid" style="min-height:100vh;margin-bottom:200px;">
 			<div class="row m-auto" style="width:80%">
 			    <div class="col-sm-6 m-auto" style="min-width:385px">
 			        <div class="card border-0">
 			            <div class="card-body">
-			                <h5 class="card-title text-center fw-bold">예시 이미지</h5>
+			                <h5 class="card-title text-center fw-bold">결과 이미지</h5>
 			            </div>
-			            <img class="card-img-bottom" src="${ contextPath }/resources/images/common/colorChange.jpg" alt="colorChange">
+			            <img src="${pageContext.request.contextPath}/resources/images/flask/<%= filename %>" id="resultImage" class="card-img-bottom" name="resultImage" alt="resultImage" />
 			        </div>
 			    </div>
 			    <div class="col-sm-6 m-auto" style="min-width:385px">
 			        <div class="card border-0">
 			            <div class="card-body">
-			                <h5 class="card-title text-center mb-4 fw-bold">이미지 가이드라인</h5>
-			                <p class="card-text text-center" style="padding:90px 0 0 0;">소파, 침대, 커튼, 테이블, 의자의 색을 변경해볼 수 있어요!<br/> <br/>사물의 색을 변경해보고 싶다면<br/>위 사물 중 하나 이상 포함된 사진을 업로드해주세요.<br/><br/>사물이 명확히 나온 사진만 인식이 가능합니다.</p>
+			                <h5 class="card-title text-center mb-4 fw-bold">선택하신 컬러값 정보</h5>
+			                <p class="card-text text-center" style="padding:8vh 0 0 0;">선택하신 컬러 값의 R : <strong class="rgb_r"></strong>, G : <strong class="rgb_g"></strong>, B : <strong class="rgb_b"></strong> 값은 <span class="hex_value"></span> 입니다.</p>
 			            </div>
 			        </div>
 			    </div>
 			</div>
 			<div class="row text-center" style="padding-top:50px;">
-			<!--  action="http://127.0.0.1:5000/process_image" -->
-				<form action="${ contextPath }/colorSelect.do?${_csrf.parameterName}=${ _csrf.token }" method="POST" enctype="multipart/form-data" id="uploadForm" class="text-center">
+				<form action="saveColorResult.do" method="POST" id="saveColorResult" class="" enctype="application/x-www-form-urlencoded; charset=UTF-8" >
 					<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
-					<label for="imgUpload" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width:260px">사진 업로드</label>
-					<input type="file" id="imgUpload" class="invisible" onchange="document.getElementById('uploadForm').submit();" />
-			        <input type="submit" style="display:none" />
+					<input type="hidden" id="fileName" name="fileName" value="<%= filename %>" />
+					<input type="hidden" id="hexVal" name="hexVal" />
+					<input type="hidden" id="memID" name="memID" value="${memResult.memID}" />
+					<button type="button" onclick="chkLoginUser()" class="btn btn-primary d-block m-auto ps-2 fw-bold">변경된 사진 저장</button>
 				</form>
 			</div>
 		</div>

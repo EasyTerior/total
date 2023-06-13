@@ -135,7 +135,24 @@ public class MemberController {
 
 	// 회원정보 수정 form으로 이동 기능 : 요청 URL - /updateForm.do
 	@RequestMapping("/updateForm.do")
-	public String updateForm() {
+	public String updateForm(HttpSession session, RedirectAttributes rttr) {
+		System.out.println("\n\nupdateForm called");
+		try {
+			Member member = (Member) session.getAttribute("memResult");
+			Member memInfo = memberMapper.getMember(member.getMemID());
+	        System.out.println("login : memInfo: " + memInfo);
+	        if (memInfo == null) {
+	        	rttr.addFlashAttribute("msgType", "실패 메세지");
+	    		rttr.addFlashAttribute("msg", "해당 페이지는 로그인을 하지 않으면 접근이 불가합니다.");
+	    		return "redirect:/updateForm.do";
+	        }
+		}catch(Exception e) {
+			System.out.println("updateForm Exception e: " + e);
+	        // login failure
+	        rttr.addFlashAttribute("msgType", "실패 메세지");
+	        rttr.addFlashAttribute("msg", "해당 페이지는 로그인을 하지 않으면 접근이 불가합니다.");
+	        return "redirect:/loginForm.do";
+		}
 		return "member/updateForm";
 	}
 
@@ -267,8 +284,6 @@ public class MemberController {
 	@PostMapping("/memberDelete.do")
 	//@RequestMapping("/memberDelete.do")
 	public String memberDelete(Member mem, HttpSession session, RedirectAttributes rttr, HttpServletRequest request) {
-
-
 		Member member = (Member) session.getAttribute("memResult");
 		System.out.println(member.toString());
 		String sessionPass= member.getMemPassword();

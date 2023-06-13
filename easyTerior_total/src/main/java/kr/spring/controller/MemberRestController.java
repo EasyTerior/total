@@ -58,7 +58,45 @@ public class MemberRestController {
 	    // return memberInfo;
 	}
 
+	// 개인정보 수정 업데이트
+	@PostMapping("/personal")
+	public Member updatePersonal (@RequestBody Member mem, HttpSession session, RedirectAttributes rttr) {
+		try {
+			System.out.println("입력 받은 값"+mem.toString());
+			memberMapper.updatePersonal(mem);
+			Member memberInfo = memberMapper.getMember(mem.getMemID());
+			session.setAttribute("memResult", memberInfo);
+			System.out.println("리턴 값"+memberInfo.toString());
+			return memberInfo;
+		} catch (Exception e) {
+			System.out.println("updateUserInfo - Exception : "+e);
+			e.printStackTrace();
+			throw new RuntimeException("Failed to updatePersonal user information");			
+			
+		} 
 
+	}
+	
+	// 비밀번호 수정 업데이트
+	@PostMapping("/password")
+	public Member updatePassword (@RequestBody Member mem, HttpSession session, RedirectAttributes rttr) {
+		try {
+			System.out.println("입력 받은 값"+mem.toString());
+			String EncyPw = pwEncoder.encode(mem.getMemPassword());
+			mem.setMemPassword(EncyPw);
+			memberMapper.updatePassword(mem);
+			Member memberInfo = memberMapper.getMember(mem.getMemID());
+			session.setAttribute("memResult", memberInfo);
+			System.out.println("리턴 값"+memberInfo.toString());
+			return memberInfo;
+		} catch (Exception e) {
+			System.out.println("updateUserInfo - Exception : "+e);
+			e.printStackTrace();
+			throw new RuntimeException("Failed to updatePassword user information");			
+			
+		} 
+
+	}
 	
 
 }

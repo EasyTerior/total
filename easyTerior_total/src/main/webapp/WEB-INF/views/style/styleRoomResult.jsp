@@ -12,9 +12,22 @@
 <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
 rel="stylesheet" /><!-- icons -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+
+<!-- bxSlider Javascript file -->
+<script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+<!-- bxSlider CSS file -->
+    <link href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css" rel="stylesheet" />
 <style>
 body, main, section {
 position: relative;
+}
+
+.pline{
+	font-size: 20px;  /* 글자 크기 설정 */
+	font-weight:bold;
+	text-align:center;
+	margin-top:20px;
+	margin-bottom:20px;
 }
 </style>
 <script type="text/javascript">
@@ -28,6 +41,85 @@ position: relative;
 		}
 		
 	});
+	$(document).ready(function() {
+	    // styleIdx 값을 활용하여 작업 수행
+   	    
+	    var styleIdx = ${style.styleIdx}; // style 객체에서 styleIdx 값 추출
+	    var resultClass1 = "${style.resultClass1}";
+	    var resultClass2 = "${style.resultClass2}";
+	    var resultClass1_probability = "${style.resultClass1_probability}";
+	    var resultClass2_probability = "${style.resultClass2_probability}";
+	    //var resultType-Explanation = 
+	    var styleImg = "${style.styleImg}";
+	    console.log(styleImg)
+	    var setimgpath="${ contextPath }/resources/images/style/"+styleImg;
+	    console.log(setimgpath)
+	    uploadedImage.src=setimgpath;
+	    Result_callShoppingAPI(resultClass1)
+		$("#resultType").text(resultClass1+" 스타일");
+		
+		// 쇼핑API 함수 호출
+		$("#resultText1-class").text(resultClass1);
+		$("#resultText1-probability").text(resultClass1_probability);
+		$("#resultText2-class").text(resultClass2);
+		$("#resultText2-probability").text(resultClass2_probability);
+		
+		//$("#resultType-Explanation").text(result[0].explanation);
+	    // 여기에서 필요한 작업을 수행하고 styleIdx 값을 활용할 수 있습니다.
+	    // 예를 들어, AJAX 요청을 보내거나 화면에 표시하는 등의 작업을 수행할 수 있습니다.
+	});
+	var slider;
+    function Result_callShoppingAPI(resultClass1) {
+    	console.log(resultClass1);
+      	// Ajax 통신
+      	$.ajax({
+	        url: "http://localhost:5000/call_api",
+	        type: "POST",
+	        data: JSON.stringify({ "style" : resultClass1 }),
+	        contentType: "application/json",
+	        processData: false,
+	        success: function(result) {
+	        	console.log(result)
+	        	// 결과 처리
+	        	
+        	$("#resultType-Explanation").text(result[0].explanation);
+	            var image_urls = result[1].image_urls;
+	            console.log(image_urls);
+	            var image_src = result[1].image_src;
+	            console.log(image_src);
+	    			$('#bxslider').empty();
+	                for(var i = 0; i < image_urls.length; i++) {
+	                    $('#bxslider').append('<a href="'+image_urls[i]+'"><img src="'+image_src[i]+'" width="220px" height="220px"></a>');
+	                }
+	                // 이미지 로딩을 위해 약간의 시간을 기다립니다.
+	                setTimeout(function() {
+	             	    if (slider) {
+	             	        slider.destroySlider(); // 기존 슬라이더가 존재하는 경우 파괴합니다.
+	             	    }
+	             	    // 새로운 슬라이더를 생성하고 인스턴스를 저장합니다.
+	             	    slider = $('#bxslider').bxSlider({
+	             	        minSlides: 2,
+	             	        maxSlides: 100,
+	             	        moveSlides: 1,
+	             	        slideWidth: 300,
+	             	        slideMargin: 2,
+	             	        mode: 'horizontal',
+	             	        auto: true,
+	             	        pause: 3000,
+	             	        speed: 1000
+	             	    });
+	             	    console.log(slider);
+	             	}, 500);
+
+        	},
+        	error: function(error) {
+        		console.log(error);
+        	}
+    	});
+    }
+
+
+        
 </script>
 <title>EasyTerior</title>
 </head>
@@ -41,29 +133,33 @@ position: relative;
 		<div class="container-fluid" style="min-height:100vh; margin-bottom:200px;">
 			<h3>
 				<span class="d-block mt-5 mb-3 fs-6 text-center">당신의 대표 인테리어는?</span>
-				<strong id="styleResult" class="d-block mb-5 fw-bold fs-2 text-center">스칸디나비아 스타일</strong>
+				<strong id="resultType" class="d-block mb-5 fw-bold fs-2 text-center">스칸디나비아 스타일</strong>
 			</h3>
 			<form>
 				<div class="row m-auto text-center">
 					<div class="col">
-						<img src="${ contextPath }/resources/images/common/styleRoom_Result_image_1.png"
-							alt="Interior Image" class="img-fluid">
+						<img id="uploadedImage" src="${ contextPath }/resources/images/common/styleRoom_Result_image_1.png"
+							alt="Interior Image" class="img-fluid" style="width:80%;">
 					</div>
 					<div class="col-sm-3">
 						<h5 class="fw-bold fs-6 text-center">&lt;대표 스타일&gt;</h5>
-						<strong class="d-block mt-3 mb-4 fs-5"><span class="bg-primary d-block">스칸디나비아</span> 96% 일치</strong>
-						<strong class="d-block mt-3 mb-4 fs-6"><span class="bg-info d-block">모던</span> 72% 일치</strong>
+						<strong class="d-block mt-3 mb-4 fs-5"><span id="resultText1-class" class="bg-primary d-block"></span><span id="resultText1-probability"></span></strong>
+						<strong class="d-block mt-3 mb-4 fs-6"><span id="resultText2-class" class="bg-info d-block"></span><span id="resultText2-probability"></span></strong>
 					</div>
 				</div>
-				<div class="row mt-4 mb-4 ps-2 text-center">스칸디나비아 스타일은 스칸디나비아 지역의 디자인 철학으로, 간결하고 심플한 디자인 원칙을 따릅니다. 밝고 넓은 공간을 선호하며, 자연 소재인 목재와 플랜트를 활용하여 자연스러운 분위기를 조성합니다. 중립적인 색상과 자연광을 즐기며, 기능성과 실용성을 중시하여 실용적이면서도 아름다운 공간을 만들어냅니다.</div>
+				<div id="resultType-Explanation" class="row mt-4 mb-4 ps-2 text-center" style="width:60%; margin:auto;"></div>
 				<div class="row mt-4 mb-4">
-					<div class="col text-center">
-						<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }" />
-					<label for="styleSave" class="btn btn-primary d-block m-auto ps-2 fw-bold" style="width:260px">스타일 저장하기</label>
-					<input type="file" id="styleSave" class="invisible" />
-					</div>
+					
 				</div>
 			</form>
+			<div class="row">
+				<div calss="col">
+					<p class="pline">이 스타일과 관련된 인테리어 아이템을 추천해드릴게요!</p>
+					<div>
+						<div id="bxslider"></div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</section>
 	<jsp:include page="../common/footer.jsp"></jsp:include>

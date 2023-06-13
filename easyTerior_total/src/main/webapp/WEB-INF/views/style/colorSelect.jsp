@@ -149,8 +149,8 @@ border-color: #fff;
 	                		<div id="resultList" class="col text-center">
 							    <%-- <p>실질적으로 탐지된 결과: ${detectionResult}</p> detectionResult를 세션에서 가져옴 --%>
 							    <% Map<String, String> objectList = (Map<String, String>) session.getAttribute("objectList"); %>
-							    <% List<Integer> resultList = (List<Integer>) session.getAttribute("detectionResult"); %>
-							    <%-- resultList가 null이 아닌 경우에만 처리 --%>
+							    <% List<Integer> resultList = (List<Integer>) session.getAttribute("resultList"); %>
+							    <%-- resultList(실질 검출, 중복 제외)가 null이 아닌 경우에만 처리 --%>
 							    <% if (resultList != null) { %>
 							        <%-- resultList를 순회하면서 각각의 객체에 대한 checkbox 또는 button을 생성 --%>
 							        <% for (Integer result : resultList) { %>

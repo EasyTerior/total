@@ -21,6 +21,10 @@ public interface MemberMapper {
 	public Member getMember(String memID);
 
 	public void memberDelete(Member mem);
+
+	public void updatePersonal(Member mem);
+
+	public void updatePassword(Member mem);
 	
 	
 }
