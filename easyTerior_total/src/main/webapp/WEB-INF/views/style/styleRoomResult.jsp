@@ -88,8 +88,7 @@ margin-bottom:20px;
 	        success: function(result) {
 	        	console.log(result)
 	        	// 결과 처리
-	        	
-        	$("#resultType-Explanation").text(result[0].explanation);
+        		$("#resultType-Explanation").text(result[0].explanation);
 	            var image_urls = result[1].image_urls;
 	            console.log(image_urls);
 	            var image_src = result[1].image_src;
@@ -140,12 +139,12 @@ margin-bottom:20px;
 		<div class="container-fluid" style="min-height:100vh; margin-bottom:200px;">
 			<h3>
 				<span class="d-block mt-5 mb-3 fs-6 text-center">당신의 대표 인테리어는?</span>
-				<strong id="resultType" class="d-block mb-5 fw-bold fs-2 text-center">스칸디나비아 스타일</strong>
+				<strong id="resultType" class="d-block mb-5 fw-bold fs-2 text-center"></strong>
 			</h3>
 			<form>
 				<div class="row m-auto text-center">
 					<div class="col">
-						<img id="uploadedImage" src="${ contextPath }/resources/images/common/styleRoom_Result_image_1.png"
+						<img id="uploadedImage" src=""
 							alt="Interior Image" class="img-fluid" style="width:80%;">
 					</div>
 					<div class="col-sm-3">

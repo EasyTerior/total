@@ -121,6 +121,7 @@ margin-bottom:20px;
 		}
 		// 이미지 로딩을 위해 약간의 시간을 기다립니다.
 		setTimeout(function() {
+
 			if (slider) {
 				slider.destroySlider(); // 기존 슬라이더가 존재하는 경우 파괴합니다.
 			}

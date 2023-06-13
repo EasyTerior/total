@@ -349,17 +349,18 @@ public class StyleController {
 
 					// "&"로 분리
 					String[] paramPairs = jsonResponse.split("&");
-					System.out.println();
+					System.out.println("\n\nparamPairs : "+paramPairs);
 					// 각 파라미터에 대해 "="로 분리하여 Map에 저장
 					for (String paramPair : paramPairs) {
 					    String[] keyValue = paramPair.split("=");
-
+					    System.out.println("\n\nparamPair : "+paramPair);
 					    if (keyValue.length == 2) {
 					        String key = keyValue[0];
 					        String value = keyValue[1];
 					        params.put(key, value);
 					    }
 					}
+					
 					String img_data = params.get("img_data");
 					String naver_urls = params.get("naver_urls");
 					String final_img = params.get("final_img");
@@ -367,11 +368,11 @@ public class StyleController {
 					String real_color = params.get("real_color");
 
 					System.out.println("\n\nSuccessful jsonResponse");
-					System.out.println("img_data : "+img_data);
-					System.out.println("naver_urls : "+naver_urls);
-					System.out.println("final_img : "+final_img);
-					System.out.println("original_img : "+original_img);
-					System.out.println("real_color : "+real_color);
+//					System.out.println("img_data : "+img_data);
+//					System.out.println("naver_urls : "+naver_urls);
+//					System.out.println("final_img : "+final_img);
+//					System.out.println("original_img : "+original_img);
+//					System.out.println("real_color : "+real_color);
 
 					if (jsonResponse != null) {
 					    session.setAttribute("img_data", img_data); // 색깔 정보

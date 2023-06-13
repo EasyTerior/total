@@ -299,7 +299,7 @@ def process_image():
         image_files = [f for f in os.listdir(image_folder) if f.lower().endswith(image_extension)]
         if len(image_files) > 0:
             # .jpg 이미지가 존재하는 경우, 첫 번째 이미지 파일의 경로를 new_img_path에 저장
-            new_img_path = image_folder+'/'+image_files[0] # predict-seg/exp21\_temp_.jpg 이렇게 나옴
+            new_img_path = image_folder+'/'+image_files[0] # predict-seg/exp21/_temp_.jpg 이렇게 나옴
             print('new_img_path :', new_img_path)
         else:
             # .jpg 이미지가 존재하지 않는 경우, 에러 처리 등을 수행
@@ -332,7 +332,7 @@ def color_change():
     print('\n\ncolor_change called\n\n')
     # 2023-06-11 20:54:40,152 - ERROR - Error color_change image: local variable 'request' referenced before assignment
     # 2023-06-11 20:54:40,154 - ERROR - Traceback (most recent call last):
-    # File "C:\total\flask\app.py", line 295, in color_change
+    # File "C:/total/flask/app.py", line 295, in color_change
     #     csrfToken = request.form.get('csrfToken')
     # UnboundLocalError: local variable 'request' referenced before assignment
     # 위 에러에 대해 아래에 새로 import 처리
@@ -345,6 +345,7 @@ def color_change():
         detectionResult = detectionResult.replace('[', '').replace(']', '').replace(' ', '').split(',')
         detectionResult = [num for num in detectionResult]
         selectedObjectList = request.form.getlist('selectedObjectList')  # 사용자가 선택한 객체 목록
+        selectedObjectList = [num for num in selectedObjectList]
         selectedColorValue = request.form.get('selectedColorValue')  # 사용자가 선택한 색깔 r,g,b 값
         dict_rgb = json.loads(selectedColorValue)
         imageDir = request.form.get('imageDir') # flask 에서 작업했던 exp 경로
@@ -374,30 +375,35 @@ def color_change():
         lines = content.split('\n')
         img_path = originalImg
         img_path = "/".join(img_path.split("\\"))
-        img_path = img_path.replace("\a","/a").replace("\b","/b").replace("\f","/f").replace("\n","/n").replace("\r","/r").replace("\t","/t").replace("\v","/v")
+        img_path = img_path.replace("\a","/a").replace("\b","/b").replace("\f","/f").replace("\n","\n").replace("\r","/r").replace("\t","/t").replace("\v","/v")
         image = cv2.imread(img_path)
         print(f'orignal image path : {img_path} | \n\n')
 
+
+        # 사용자가 선택한 객체들만 색칠하기
+        total = [txt for txt in selectedObjectList if txt in selectedObjectList]
         coordinates_dict = {}
-        for line in lines: # 역순 필요 여부 체크
+        coordinates_list = []
+        for line in lines:
             line_number, *coordinates = line.split(' ')
-            if line_number.isdigit() and line_number in detectionResult:
+            if line_number.isdigit() and line_number in total:
                 if line_number in coordinates_dict:
+                    # coordinates_dict.append(coordinates)
                     coordinates_dict[line_number].append(coordinates)
                 else:
                     coordinates_dict[line_number] = [coordinates]
         # 좌표 출력 - 가져온 RGB 적용
-        for item in detectionResult:
+        for item in total:
             if item in coordinates_dict:
                 coordinates_list = coordinates_dict[item]
-                # print(f"{item} 좌표:")
-                # for coordinates in coordinates_list:
-                    # print(coordinates)
+                print(f"{item} 좌표:")
+                for coordinates in coordinates_list:
+                    print(coordinates)
             else:
                 print(f"{item}에 대한 좌표가 없습니다.")
 
         # 좌표에 색상 적용 - 색깔 칠하기
-        for item in detectionResult:
+        for item in total:
             if item in coordinates_dict:
                 coordinates_list = coordinates_dict[item]
                 for coordinates in coordinates_list:
@@ -502,7 +508,7 @@ def color_change():
         final_img
         print(f'encoded_json : {encoded_json}\nall_image_urls_str : {all_image_urls_str}\nfinal_img : {final_img}\noriginalImg : {originalImg}\nreal_color : {real_color}\n')
 
-        redirect_url = "http://localhost:8081/colorChangeShowSave.do?img_data=" + encoded_json + "&naver_urls=" + all_image_urls_str + "&final_img="+final_img + "&original_img=" + originalImg+"&real_color="+real_color
+        redirect_url = "http://localhost:8081/colorChangeResult.do?img_data=" + encoded_json + "&final_img="+final_img + "&original_img=" + originalImg+"&real_color="+ real_color + "&naver_urls=" + all_image_urls_str
 
         return redirect_url # redirect(redirect_url)
 
@@ -621,7 +627,8 @@ def upload_image():
         return "No file selected.", 400
 
     if memID != "":
-        img_path="D:/total/easyTerior_total/src/main/webapp/resources/images/style/"+memID+"_"+filename
+        img_path = "C:/eGovFrame-4.0.0/workspace.edu/.metadata/.plugins/org.eclipse.wst.server.core/tmp2/wtpwebapps/easyTerior_total/resources/images/style/"+memID+"_"+filename
+        # img_path="D:/total/easyTerior_total/src/main/webapp/resources/images/style/"+memID+"_"+filename
         #img_path="D:/total2/easyTerior_total/src/main/webapp/style/"+memID+"_"+filename
         file.save(img_path)
 
