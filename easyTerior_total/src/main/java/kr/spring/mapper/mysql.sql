@@ -40,22 +40,35 @@ CREATE TABLE savestyle(
 SELECT * FROM testsavestyle;
 
 -- 게시판 테이블 생성
-CREATE TABLE board(
-	idx INT NOT NULL AUTO_INCREMENT,
-	memID VARCHAR(20) NOT NULL,
-	title VARCHAR(100) NOT NULL,
-	content VARCHAR(2000) NOT NULL,
-	writer VARCHAR(50) NOT NULL,
-	indate DATETIME DEFAULT NOW(),
-	count INT DEFAULT 0,
-	PRIMARY KEY(idx)
-);
-
--- DROP TABLE board;
 
 -- INSERT INTO BOARD (title, content, writer)
 -- VALUES('제목으로 뭐하지','팝콘은 어니언과 달콤 반반으로 할 것', '메가박스');
 
-SELECT * FROM board;
 
--- DELETE FROM board;
+CREATE TABLE Board (
+    boardID INT(11) NOT NULL AUTO_INCREMENT,
+    title VARCHAR(50) NOT NULL,
+    content VARCHAR(2000) NOT NULL,
+    boardImage VARCHAR(50),
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    views INT(11) DEFAULT 0,
+    memID VARCHAR(50) NOT NULL,
+    voteContent1 VARCHAR(2000),
+    voteContent2 VARCHAR(2000),
+    count1 int default 0,
+    count2 int default 0,
+    PRIMARY KEY (boardID)
+);
+
+CREATE TABLE Comment (
+    commentID INT(11) NOT NULL AUTO_INCREMENT,
+    commentContent VARCHAR(2000) NOT NULL,
+    writeAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    memID VARCHAR(50) NOT NULL,
+    boardID INT(11) NOT NULL,
+    PRIMARY KEY(commentID)
+);
+SELECT * FROM Board;
+SELECT * FROM Comment;
+DELETE FROM board;
+Drop table Comment;

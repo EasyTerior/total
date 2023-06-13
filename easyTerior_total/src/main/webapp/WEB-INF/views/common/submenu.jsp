@@ -18,7 +18,7 @@
     	<ul>
     		<li class="mb-3"><a href="${ contextPath }/styleRoom.do" class="px-3 nav-link link-dark">스타일 분석</a></li>
     		<li class="mb-3"><a href="${ contextPath }/colorChange.do" class="px-3 nav-link link-dark">색깔 변경하기</a></li>
-    		<li class="mb-3"><a href="${ contextPath }/boardMain.do" class="px-3 nav-link link-dark">커뮤니티</a></li>
+    		<li class="mb-3"><a href="${ contextPath }/boardList.do" class="px-3 nav-link link-dark">커뮤니티</a></li>
     	</ul>
    	</div>
 </div>
