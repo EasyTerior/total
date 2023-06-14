@@ -5,9 +5,11 @@
 <%
     String contextPath = (String) pageContext.getAttribute("contextPath");  // contextPath 가져오기
     String imagePath = (String) session.getAttribute("imgPath");  // session에서 이미지 경로 가져오기
+    String originalPath = (String) session.getAttribute("originalImg");  // session에서 이미지 경로 가져오기
 
     // 파일명 추출
-    String filename = imagePath.substring(imagePath.lastIndexOf("/") + 1);  // 파일명 추출
+    String change_filename = imagePath.substring(imagePath.lastIndexOf("/") + 1);  // 파일명 추출
+    String original_filename = originalPath.substring(originalPath.lastIndexOf("\\") + 1);  // 파일명 추출
 
 %>
 <%-- EL을 사용하여 변수 출력 <p>객체 탐지 결과: /$/{detectionResult/}</p> --%>
@@ -145,10 +147,18 @@ border-color: #fff;
 			<div class="row m-auto card-group" style="width:80%">
 				<div class="card border-0" style="min-width:385px">
 		            <div class="card-body">
+		                <h5 class="card-title text-center fw-bold">원본 이미지</h5>
+		            </div>
+		            <img src="${pageContext.request.contextPath}/resources/images/flask/<%= original_filename %>" id="resultImage" class="card-img-bottom" name="resultImage" alt="resultImage" />
+	            </div>
+				<div class="card border-0" style="min-width:385px">
+		            <div class="card-body">
 		                <h5 class="card-title text-center fw-bold">객체 확인된 이미지</h5>
 		            </div>
-		            <img src="${pageContext.request.contextPath}/resources/images/flask/<%= filename %>" id="resultImage" class="card-img-bottom" name="resultImage" alt="resultImage" />
-		        </div>
+		            <img src="${pageContext.request.contextPath}/resources/images/flask/<%= change_filename %>" id="resultImage" class="card-img-bottom" name="resultImage" alt="resultImage" />
+	            </div>
+            </div>
+            <div class="row m-auto card-group pt-5" style="width:80%">
 			    <div class="card border-0" style="min-width:385px">
 		            <div class="card-body">
 		                <div class="row mb-5">
