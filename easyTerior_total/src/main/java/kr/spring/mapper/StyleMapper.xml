@@ -20,4 +20,9 @@
 		SELECT * FROM style
 		WHERE styleIdx = #{styleIdx}
 	</select>
+	
+	<delete id="styleDelete" parameterType="String">
+		DELETE FROM style 
+		WHERE memID = #{memID}
+	</delete>	
 </mapper>

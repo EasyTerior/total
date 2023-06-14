@@ -20,12 +20,18 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import kr.spring.entity.Member;
+import kr.spring.mapper.ColorMapper;
 import kr.spring.mapper.MemberMapper;
+import kr.spring.mapper.StyleMapper;
 
 @Controller // controller 기능을 위해 annotation 처리
 public class MemberController {
 	@Autowired
 	private MemberMapper memberMapper;
+	@Autowired
+	private StyleMapper styleMapper;
+	@Autowired
+	private ColorMapper colorMapper;
 	
 	@Autowired
 	private PasswordEncoder pwEncoder; // 비밀번호 인코딩
@@ -285,21 +291,37 @@ public class MemberController {
 	//@RequestMapping("/memberDelete.do")
 	public String memberDelete(Member mem, HttpSession session, RedirectAttributes rttr, HttpServletRequest request) {
 		Member member = (Member) session.getAttribute("memResult");
+		System.out.println("\n\nmemberDelete called");
 		System.out.println(member.toString());
-		String sessionPass= member.getMemPassword();
-		String voPass = mem.getMemPassword();
-
-
-		if (!pwEncoder.matches(voPass, sessionPass)){
+//		String sessionPass= member.getMemPassword();
+//		String voPass = mem.getMemPassword();
+		boolean isMatches = pwEncoder.matches(mem.getMemPassword(), member.getMemPassword());
+//		if (!pwEncoder.matches(voPass, sessionPass)){
+		if (!isMatches){
 			rttr.addFlashAttribute("msgType", "실패 메세지");
 			rttr.addFlashAttribute("msg", "비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
 
 	        return "redirect:/leaveForm.do";  // 수정된 부분: 리다이렉트할 URL 수정
-		}
+		}else {
+			try {
+				// 외래 키 제약 조건에 따라 Style과 Color에서 먼저 삭제할 것.
+				styleMapper.styleDelete(member.getMemID());
+				colorMapper.colorDelete(member.getMemID());
+				memberMapper.memberDelete(mem);
+				session.invalidate();
+				rttr.addFlashAttribute("msgType", "성공 메세지");
+				rttr.addFlashAttribute("msg", "성공적으로 탈퇴 되셨습니다.");
+				return "redirect:/";
+			}catch(Exception e) {
+				e.printStackTrace();
+				System.out.println("memberDelete - Exception e : "+e);
+				rttr.addFlashAttribute("msgType", "실패 메세지");
+				rttr.addFlashAttribute("msg", "탈퇴 진행 중 에러가 발생하였습니다. 다시 시도해주세요.");
 
-		memberMapper.memberDelete(mem);
-		session.invalidate();
-		return "redirect:/";
+		        return "redirect:/leaveForm.do";  // 수정된 부분: 리다이렉트할 URL 수정
+			}
+		}
+		
 	}
 
 }

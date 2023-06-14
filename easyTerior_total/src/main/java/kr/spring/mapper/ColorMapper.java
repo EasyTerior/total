@@ -9,7 +9,9 @@ public interface ColorMapper {
 
 	List<Color> getColor(String memID);
 
-	void deleteColor(int imgID);
+	void deleteColor(int imgID); // 회원이 선택하여 부분 삭제
+
+	void colorDelete(String memID); // 회원 탈퇴 시 전체 삭제
 
 
 }

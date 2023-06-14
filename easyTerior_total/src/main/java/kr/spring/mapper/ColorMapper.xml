@@ -13,4 +13,8 @@
         DELETE FROM color
         WHERE imgID = #{imgID}
     </delete>
+    <delete id="colorDelete" parameterType="String">
+        DELETE FROM color
+        WHERE memID = #{memID}
+    </delete>
 </mapper>
