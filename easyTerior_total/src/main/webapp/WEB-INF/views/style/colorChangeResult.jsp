@@ -120,7 +120,9 @@ font-family:'SUITE-Regular';
 					<input type="hidden" id="fileName" name="fileName" value="<%= filename %>" />
 					<input type="hidden" id="hexVal" name="hexVal" />
 					<input type="hidden" id="memID" name="memID" value="${memResult.memID}" />
-					<button type="button" onclick="chkLoginUser()" class="btn btn-primary d-block m-auto ps-2 fw-bold">변경된 사진 저장</button>
+					<button type="button" onclick="chkLoginUser()" class="btn btn-primary d-inline-block m-auto ps-2 fw-bold">변경된 사진 저장</button>
+					<button type="button" onclick="window.location.href='${ contextPath }/colorChange.do'" class="btn btn-warning d-inline-block m-auto ps-2 fw-bold">다시 하기</button>
+					
 				</form>
 			</div>
 		</div>

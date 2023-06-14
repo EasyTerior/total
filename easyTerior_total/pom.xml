@@ -165,22 +165,18 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.13.0</version>
 		</dependency>
-		<!-- WebClient를 사용하려면 프로젝트가 Spring 5 이상을 사용하고 있어야하며, spring-webflux 의존성을 추가 -->
-		<!-- 
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+		<!-- lgg -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webflux</artifactId>
-			<version>${org.springframework-version}</version>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>2.14.2</version>
 		</dependency>
-		-->
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux -->
-		<!-- 
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-webflux</artifactId>
-		    <version>2.5.12</version>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>2.9.8</version>
 		</dependency>
-		 -->
 		
 		<!-- 파일 업로드를 하기 위한 COS API -->
 		<!-- https://mvnrepository.com/artifact/servlets.com/cos -->
@@ -188,6 +184,27 @@
 		    <groupId>servlets.com</groupId>
 		    <artifactId>cos</artifactId>
 		    <version>05Nov2002</version>
+		</dependency>
+		
+		<!-- jsonArray 사용 : lgg -->
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20180130</version>
+		</dependency>
+
+		<!-- 파일 업로드 : lgg -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<!-- commons -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
 		</dependency>
 		
 		<!-- 보안을 하기 위한 API 추가 -->
