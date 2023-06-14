@@ -8,7 +8,7 @@
 	<packaging>war</packaging>
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
-		<java-version>1.6</java-version>
+		<java-version>1.8</java-version> <!-- 1.6 -> 1.8 -->
 		<org.springframework-version>5.0.2.RELEASE</org.springframework-version>
 		<org.springsecurity-version>5.0.2.RELEASE</org.springsecurity-version>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
@@ -127,13 +127,6 @@
 		</dependency>
 		
 		<!-- API : mysql, spring-jdbc, com.zaxxer(HikariCP), mybatis, mybatis-spring  -->
-		<!-- 
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.42</version>
-		</dependency>
-		-->
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 		    <groupId>mysql</groupId>
@@ -170,8 +163,24 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.9.8</version>
+			<version>2.13.0</version>
 		</dependency>
+		<!-- WebClient를 사용하려면 프로젝트가 Spring 5 이상을 사용하고 있어야하며, spring-webflux 의존성을 추가 -->
+		<!-- 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webflux</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+		-->
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux -->
+		<!-- 
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-webflux</artifactId>
+		    <version>2.5.12</version>
+		</dependency>
+		 -->
 		
 		<!-- 파일 업로드를 하기 위한 COS API -->
 		<!-- https://mvnrepository.com/artifact/servlets.com/cos -->
@@ -196,8 +205,20 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${org.springsecurity-version}</version>
-		</dependency>		
-			
+		</dependency>
+		
+		<!-- JPA -->
+	    <dependency>
+	        <groupId>javax.persistence</groupId>
+	        <artifactId>javax.persistence-api</artifactId>
+	        <version>2.2</version>
+	    </dependency>
+	    <!-- Hibernate (JPA 구현체) -->
+	    <dependency>
+	        <groupId>org.hibernate</groupId>
+	        <artifactId>hibernate-core</artifactId>
+	        <version>5.4.32.Final</version>
+	    </dependency>
 	</dependencies>
     <build>
         <plugins>
@@ -210,9 +231,6 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
-        
-        
-        
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <version>2.9</version>

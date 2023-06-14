@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.mapper.StyleMapper">
+	<insert id="styleSave" parameterType="kr.spring.entity.Style">
+    INSERT INTO style (resultClass1, resultClass2, resultClass1_probability, resultClass2_probability, styleImg, memID)
+    VALUES (#{resultClass1}, #{resultClass2}, #{resultClass1_probability}, #{resultClass2_probability},#{styleImg}, #{memID})
+	</insert>
+	
+	<select id="getStyle" parameterType="String" resultType="kr.spring.entity.Style">
+		SELECT * FROM style
+		WHERE memID = #{memID}
+	</select>
+	
+	<delete id="deleteSelectedStyles" parameterType="int">
+		DELETE FROM style 
+		WHERE styleIdx = #{styleIdx}
+	</delete>	
+	
+	<select id="getStyleByIdx" parameterType="int" resultType="kr.spring.entity.Style">
+		SELECT * FROM style
+		WHERE styleIdx = #{styleIdx}
+	</select>
+</mapper>

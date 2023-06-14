@@ -34,10 +34,21 @@
 		SELECT * FROM member
 		WHERE memID = #{memID}
 	</select>
-	
+
 	<delete id="memberDelete" parameterType="kr.spring.entity.Member">
         DELETE FROM member
         WHERE memID = #{memID}
     </delete>
-
+    
+    <update id="updatePersonal" parameterType="kr.spring.entity.Member">
+		UPDATE member 
+		SET memNickname=#{memNickname}, memPhone=#{memPhone}, memEmail=#{memEmail}, memAddress=#{memAddress}
+		WHERE memID = #{memID}
+	</update>
+	
+	<update id="updatePassword" parameterType="kr.spring.entity.Member">
+		UPDATE member 
+		SET memPassword=#{memPassword}
+		WHERE memID = #{memID}
+	</update>
 </mapper>

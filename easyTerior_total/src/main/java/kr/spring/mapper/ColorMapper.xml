@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.mapper.ColorMapper">
+	<select id="getColor" parameterType="String" resultType="kr.spring.entity.Color">
+		SELECT * FROM color
+		WHERE memID = #{memID}
+	</select>
+	<insert id="saveColor" parameterType="kr.spring.entity.Color">
+		INSERT INTO color (fileName, hexVal, memID)
+        VALUES (#{fileName}, #{hexVal}, #{memID})
+	</insert>
+	<delete id="deleteColor" parameterType="int">
+        DELETE FROM color
+        WHERE imgID = #{imgID}
+    </delete>
+</mapper>
