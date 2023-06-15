@@ -17,4 +17,8 @@
         DELETE FROM color
         WHERE memID = #{memID}
     </delete>
+    <select id="getColorfilename" parameterType="int" resultType="String">
+		SELECT fileName FROM color
+		WHERE imgID = #{imgID}
+	</select>
 </mapper>

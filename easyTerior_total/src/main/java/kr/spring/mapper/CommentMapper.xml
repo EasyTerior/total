@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.mapper.CommentMapper">
+
+
+	<select id="commentList" resultType="kr.spring.entity.Comment">
+		SELECT * FROM Comment
+		ORDER BY writeAt DESC ;
+	</select>
+
+
+	<insert id="comment" parameterType="kr.spring.entity.Comment">
+		INSERT INTO Comment(memID,boardID,commentContent)
+		VALUES (#{memID},#{boardID},#{commentContent});
+	</insert>
+
+</mapper>

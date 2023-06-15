@@ -13,5 +13,6 @@ public interface ColorMapper {
 
 	void colorDelete(String memID); // 회원 탈퇴 시 전체 삭제
 
+	String getColorfilename(int imgID);  //0615 추가
 
 }
