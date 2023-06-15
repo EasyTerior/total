@@ -341,28 +341,31 @@ public class StyleController {
 				// URL 디코딩 및 파싱하여 detection_result와 img_path 값을 추출
 				try {
 					jsonResponse = URLDecoder.decode(jsonResponse, "UTF-8");
-					String[] ResponseSplit = jsonResponse.split("\\?");
-					jsonResponse = ResponseSplit[1];
-					System.out.println("\n\njsonResponse : "+jsonResponse+"\n\n");
+					// String[] ResponseSplit = jsonResponse.split("\\?");
+					String ResponseSplit = jsonResponse.substring(jsonResponse.indexOf("?") + 1); // "?" 이후의 문자열을 해시 처리한 값으로 대체
+					// jsonResponse = ResponseSplit[1:];
+					System.out.println("\n\nResponseSplit : "+ResponseSplit+"\n\n");
 					// 분리된 파라미터들을 저장할 Map 생성
 					Map<String, String> params = new HashMap<>();
 
 					// "&"로 분리
-					String[] paramPairs = jsonResponse.split("&");
+					String[] paramPairs = ResponseSplit.split("&");
 					System.out.println("\n\nparamPairs : "+paramPairs);
 					// 각 파라미터에 대해 "="로 분리하여 Map에 저장
 					for (String paramPair : paramPairs) {
-					    String[] keyValue = paramPair.split("=");
-					    System.out.println("\n\nparamPair : "+paramPair);
+					    String[] keyValue = paramPair.split("=", 2);
 					    if (keyValue.length == 2) {
 					        String key = keyValue[0];
 					        String value = keyValue[1];
+					        System.out.println("\nkey : "+key+" | value : "+value);
 					        params.put(key, value);
+					        
 					    }
 					}
 					
-					String img_data = params.get("img_data");
 					String naver_urls = params.get("naver_urls");
+					String naver_src = params.get("naver_src");
+					String img_data = params.get("img_data");
 					String final_img = params.get("final_img");
 					String original_img = params.get("original_img");
 					String real_color = params.get("real_color");
@@ -370,13 +373,15 @@ public class StyleController {
 					System.out.println("\n\nSuccessful jsonResponse");
 //					System.out.println("img_data : "+img_data);
 					System.out.println("naver_urls : "+naver_urls);
+					System.out.println("naver_src : "+naver_src);
 //					System.out.println("final_img : "+final_img);
 //					System.out.println("original_img : "+original_img);
 //					System.out.println("real_color : "+real_color);
 
-					if (jsonResponse != null) {
+					if (ResponseSplit != null) {
 					    session.setAttribute("img_data", img_data); // 색깔 정보
 					    session.setAttribute("naver_urls", naver_urls); // 네이버 쇼핑 API 결과
+					    session.setAttribute("naver_src", naver_src); // 네이버 쇼핑 API 결과 이미지
 					    session.setAttribute("final_img", final_img); // flask에서 처리된 이미지
 					    session.setAttribute("original_img", original_img); // 사용자가 업로드 한 원본 이미지 경로
 					    session.setAttribute("real_color", real_color); // 처리한 색깔

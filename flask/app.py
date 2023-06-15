@@ -210,7 +210,7 @@ def process_image():
         if latest_exp_folder:
             # 파일 경로 생성
             file_path = os.path.join(folder_path, latest_exp_folder, label_path)
-            file_path = file_path
+            file_path = file_path.replace("\\","/")
             print("file_path for label txt :", file_path)
 
             # Check if the file exists
@@ -377,14 +377,14 @@ def color_change():
         img_path = "/".join(img_path.split("\\"))
         img_path = img_path.replace("\a","/a").replace("\b","/b").replace("\f","/f").replace("\n","\n").replace("\r","/r").replace("\t","/t").replace("\v","/v")
         image = cv2.imread(img_path)
-        print(f'orignal image path : {img_path} | \n\n')
+        print(f'\n\norignal image path : {img_path} | \n\n')
 
 
         # 사용자가 선택한 객체들만 색칠하기
-        total = [txt for txt in selectedObjectList if txt in selectedObjectList]
+        total = sorted([txt for txt in selectedObjectList if txt in selectedObjectList],reverse=True)
         coordinates_dict = {}
         coordinates_list = []
-        for line in lines:
+        for line in lines: # reversed(lines)
             line_number, *coordinates = line.split(' ')
             if line_number.isdigit() and line_number in total:
                 if line_number in coordinates_dict:
@@ -481,11 +481,11 @@ def color_change():
         # selected_items_labels = list(set(selected_items_labels))
         selected_items_labels = [get_object_label(int(ids)) for ids in selectedObjectList]
         print(f'selected_items_labels : {selected_items_labels}')
-        all_image_urls = []
+        # all_image_urls = []
 
         for label in selected_items_labels:
             encText = urllib.parse.quote(label)
-            url = "https://openapi.naver.com/v1/search/image?query=" + encText
+            url = "https://openapi.naver.com/v1/search/shop?query=" + encText+"&sort=date"
             req = urllib.request.Request(url)
             req.add_header("X-Naver-Client-Id",client_id)
             req.add_header("X-Naver-Client-Secret",client_secret)
@@ -497,18 +497,18 @@ def color_change():
                 response_dict = json.loads(response_body.decode('utf-8'))
                 # 리스트의 크기에 따라 이미지를 가져오는 개수를 조정합니다.
                 if len(selected_items_labels) <= 3:
-                    image_urls = ",".join([urllib.parse.quote(item['link']) for item in response_dict['items'][:2]]) if response_dict['items'] else ""
+                    image_urls = [item['link'] for item in response_dict['items'][:3]] if response_dict['items'] else []
+                    image_src = [item['image'] for item in response_dict['items'][:3]] if response_dict['items'] else []
                 else:
-                    image_urls = urllib.parse.quote(response_dict['items'][0]['link']) if response_dict['items'] else ""
-                all_image_urls.append(image_urls)
+                    image_urls = [item['link'] for item in response_dict['items'][:10]] if response_dict['items'] else []
+                    image_src = [item['image'] for item in response_dict['items'][:10]] if response_dict['items'] else []
+
             else:
                 print("Error Code:" + rescode)
-        # 모든 이미지 URL을 쉼표 띄어쓰기 로 구분하여 합칩니다.
-        all_image_urls_str = ", ".join(all_image_urls)
-        final_img
-        print(f'encoded_json : {encoded_json}\nall_image_urls_str : {all_image_urls_str}\nfinal_img : {final_img}\noriginalImg : {originalImg}\nreal_color : {real_color}\n')
-
-        redirect_url = "http://localhost:8081/colorChangeResult.do?img_data=" + encoded_json + "&final_img="+final_img + "&original_img=" + originalImg+"&real_color="+ real_color + "&naver_urls=" + all_image_urls_str
+        image_urls = ",".join(image_urls)
+        image_src = ",".join(image_src)
+        redirect_url = "http://localhost:8081/colorChangeResult.do?img_data=" + encoded_json + "&final_img="+final_img + "&original_img=" + originalImg+"&real_color="+ real_color + "&naver_src=" + image_src + "&naver_urls=" + image_urls
+        # all_image_urls_str
 
         return redirect_url # redirect(redirect_url)
 
@@ -569,7 +569,7 @@ def style_analysis(style):
         return {'error': 'API request error'}
 
 
-# 
+
 def find_class(file):
     # 테스트할 이미지 로드 및 전처리
     img = load_img(file, target_size=(224, 224))
@@ -611,7 +611,6 @@ def find_class(file):
     result.append(shopping_result)
     print(result)
     return result
-
 
 
 # 이미지 업로드 및 결과 반환하는 엔드포인트 정의

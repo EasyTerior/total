@@ -158,12 +158,12 @@ margin-bottom:20px;
 					
 				</div>
 			</form>
-			<div class="row">
-				<div calss="col">
-					<p class="pline">이 스타일과 관련된 인테리어 아이템을 추천해드릴게요!</p>
-					<div>
-						<div id="bxslider"></div>
-					</div>
+		</div>
+		<div class="row">
+			<div calss="col">
+				<p class="pline">이 스타일과 관련된 인테리어 아이템을 추천해드릴게요!</p>
+				<div>
+					<div id="bxslider"></div>
 				</div>
 			</div>
 		</div>

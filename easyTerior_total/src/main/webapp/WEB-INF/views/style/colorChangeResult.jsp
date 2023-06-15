@@ -10,9 +10,12 @@
     String filename = imagePath.substring(imagePath.lastIndexOf("/") + 1);  // 파일명 추출
     
     String naverUrlsStr = (String) session.getAttribute("naver_urls");
+    String naverSrcStr = (String) session.getAttribute("naver_src");
  	// naver_urls 값을 쉼표로 분할하여 배열로 만듦
     String[] naverUrlsArray = naverUrlsStr.split(",");
+    String[] naverSrcArray = naverSrcStr.split(",");
     List<String> naver_urls = Arrays.asList(naverUrlsArray);
+    List<String> naver_src = Arrays.asList(naverSrcArray);
 
 %>
 <!DOCTYPE html>
@@ -26,6 +29,10 @@
 <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
 rel="stylesheet" /><!-- icons -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+<!-- bxSlider Javascript file -->
+<script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+<!-- bxSlider CSS file -->
+<link href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css" rel="stylesheet" />
 <style>
 @font-face {
     font-family: 'SUITE-Regular';
@@ -37,6 +44,7 @@ body, main, section {
 position: relative;
 font-family:'SUITE-Regular';
 }
+.bx-wrapper {max-width: 100%; margin: 0 auto;}
 </style>
 <script type="text/javascript">
 	// rgbToHex
@@ -69,77 +77,32 @@ font-family:'SUITE-Regular';
 	
 	var slider;
 	function NaverAPI(){
-		$('#bxslider').empty();
-        for(var i = 0; i < image_urls.length; i++) {
+		// $('#bxslider').empty();
+        /*
+		for(var i = 0; i < naver_urls.length; i++) {
             $('#bxslider').append('<a href="'+naver_urls[i]+'"><img src="'+naver_urls[i]+'" width="220px" height="220px"></a>');
         }
+        */
 		setTimeout(function() {
      	    if (slider) {
      	        slider.destroySlider(); // 기존 슬라이더가 존재하는 경우 파괴합니다.
      	    }
      	    // 새로운 슬라이더를 생성하고 인스턴스를 저장합니다.
-     	    slider = $('#bxslider').bxSlider({
-     	        minSlides: 2,
-     	        maxSlides: 100,
-     	        moveSlides: 1,
-     	        slideWidth: 300,
-     	        slideMargin: 2,
-     	        mode: 'horizontal',
-     	        auto: true,
-     	        pause: 3000,
-     	        speed: 1000
-     	    });
+     	    $('#bxslider').bxSlider({
+		        minSlides: 4, //한번에 보여질 슬라이드 최소 개수
+		        maxSlides: 4, //최대 개수
+		        moveSlides: 1, //한번에 움직이는 슬라이드 개수
+		        slideWidth: 360, // 각 슬라이드의 폭 크기
+		        slideMargin: 5, // 슬라이드 간 여백
+		        mode: 'horizontal',
+		        auto: true, //자동
+		        pause:3000,
+		        speed:1000
+		    });
      	    console.log(slider);
      	}, 500);
 	}
-    function Result_callShoppingAPI(resultClass1) {
-    	console.log(resultClass1);
-      	// Ajax 통신
-      	$.ajax({
-	        url: "http://localhost:5000/call_api",
-	        type: "POST",
-	        data: JSON.stringify({ "style" : resultClass1 }),
-	        contentType: "application/json",
-	        processData: false,
-	        success: function(result) {
-	        	console.log(result)
-	        	// 결과 처리
-        		$("#resultType-Explanation").text(result[0].explanation);
-	            var image_urls = result[1].image_urls;
-	            console.log(image_urls);
-	            var image_src = result[1].image_src;
-	            console.log(image_src);
-	    			$('#bxslider').empty();
-	                for(var i = 0; i < image_urls.length; i++) {
-	                    $('#bxslider').append('<a href="'+image_urls[i]+'"><img src="'+image_src[i]+'" width="220px" height="220px"></a>');
-	                }
-	                // 이미지 로딩을 위해 약간의 시간을 기다립니다.
-	                setTimeout(function() {
-	             	    if (slider) {
-	             	        slider.destroySlider(); // 기존 슬라이더가 존재하는 경우 파괴합니다.
-	             	    }
-	             	    // 새로운 슬라이더를 생성하고 인스턴스를 저장합니다.
-	             	    slider = $('#bxslider').bxSlider({
-	             	        minSlides: 2,
-	             	        maxSlides: 100,
-	             	        moveSlides: 1,
-	             	        slideWidth: 300,
-	             	        slideMargin: 2,
-	             	        mode: 'horizontal',
-	             	        auto: true,
-	             	        pause: 3000,
-	             	        speed: 1000
-	             	    });
-	             	    console.log(slider);
-	             	}, 500);
-
-        	},
-        	error: function(error) {
-        		console.log(error);
-        	}
-    	});
-    }
-
+    
 	$(document).ready(function(){
 		// 회원가입 후 modal 표시
 		if(${ not empty msgType}){
@@ -164,7 +127,7 @@ font-family:'SUITE-Regular';
 		$(".hex_value").text(rgbToHex(r, g, b));
 		$("#hexVal").val(rgbToHex(r, g, b));
 		
-		
+		NaverAPI();
 	});
 </script>
 <title>EasyTerior</title>
@@ -209,7 +172,11 @@ font-family:'SUITE-Regular';
 				<div calss="col">
 					<p class="pline">이 스타일과 관련된 인테리어 아이템을 추천해드릴게요!</p>
 					<div>
-						<div id="bxslider"></div>
+						<div id="bxslider">
+							<% for (int i = 0; i < naver_urls.size(); i++) { %>
+						        <a href="<%= naver_urls.get(i) %>"><img src="<%= naver_src.get(i) %>" style="width:220px; height:220px;" alt="url" /></a>
+						    <% } %>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -238,9 +205,5 @@ font-family:'SUITE-Regular';
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-
-</script>
 </body>
 </html>
