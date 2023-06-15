@@ -497,8 +497,8 @@ def color_change():
                 response_dict = json.loads(response_body.decode('utf-8'))
                 # 리스트의 크기에 따라 이미지를 가져오는 개수를 조정합니다.
                 if len(selected_items_labels) <= 3:
-                    image_urls = [item['link'] for item in response_dict['items'][:3]] if response_dict['items'] else []
-                    image_src = [item['image'] for item in response_dict['items'][:3]] if response_dict['items'] else []
+                    image_urls = [item['link'] for item in response_dict['items'][:4]] if response_dict['items'] else []
+                    image_src = [item['image'] for item in response_dict['items'][:4]] if response_dict['items'] else []
                 else:
                     image_urls = [item['link'] for item in response_dict['items'][:10]] if response_dict['items'] else []
                     image_src = [item['image'] for item in response_dict['items'][:10]] if response_dict['items'] else []
