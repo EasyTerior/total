@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%-- JSTL --%>
+<%@ page import="java.util.*" %>
 <c:set var="contextPath" value="${ pageContext.request.contextPath }" />
 <%
     String contextPath = (String) pageContext.getAttribute("contextPath");  // contextPath 가져오기
@@ -7,6 +8,11 @@
 
     // 파일명 추출
     String filename = imagePath.substring(imagePath.lastIndexOf("/") + 1);  // 파일명 추출
+    
+    String naverUrlsStr = (String) session.getAttribute("naver_urls");
+ 	// naver_urls 값을 쉼표로 분할하여 배열로 만듦
+    String[] naverUrlsArray = naverUrlsStr.split(",");
+    List<String> naver_urls = Arrays.asList(naverUrlsArray);
 
 %>
 <!DOCTYPE html>
@@ -60,6 +66,79 @@ font-family:'SUITE-Regular';
         	$("#saveColorResult").submit(); // form 제출
         }
 	}
+	
+	var slider;
+	function NaverAPI(){
+		$('#bxslider').empty();
+        for(var i = 0; i < image_urls.length; i++) {
+            $('#bxslider').append('<a href="'+naver_urls[i]+'"><img src="'+naver_urls[i]+'" width="220px" height="220px"></a>');
+        }
+		setTimeout(function() {
+     	    if (slider) {
+     	        slider.destroySlider(); // 기존 슬라이더가 존재하는 경우 파괴합니다.
+     	    }
+     	    // 새로운 슬라이더를 생성하고 인스턴스를 저장합니다.
+     	    slider = $('#bxslider').bxSlider({
+     	        minSlides: 2,
+     	        maxSlides: 100,
+     	        moveSlides: 1,
+     	        slideWidth: 300,
+     	        slideMargin: 2,
+     	        mode: 'horizontal',
+     	        auto: true,
+     	        pause: 3000,
+     	        speed: 1000
+     	    });
+     	    console.log(slider);
+     	}, 500);
+	}
+    function Result_callShoppingAPI(resultClass1) {
+    	console.log(resultClass1);
+      	// Ajax 통신
+      	$.ajax({
+	        url: "http://localhost:5000/call_api",
+	        type: "POST",
+	        data: JSON.stringify({ "style" : resultClass1 }),
+	        contentType: "application/json",
+	        processData: false,
+	        success: function(result) {
+	        	console.log(result)
+	        	// 결과 처리
+        		$("#resultType-Explanation").text(result[0].explanation);
+	            var image_urls = result[1].image_urls;
+	            console.log(image_urls);
+	            var image_src = result[1].image_src;
+	            console.log(image_src);
+	    			$('#bxslider').empty();
+	                for(var i = 0; i < image_urls.length; i++) {
+	                    $('#bxslider').append('<a href="'+image_urls[i]+'"><img src="'+image_src[i]+'" width="220px" height="220px"></a>');
+	                }
+	                // 이미지 로딩을 위해 약간의 시간을 기다립니다.
+	                setTimeout(function() {
+	             	    if (slider) {
+	             	        slider.destroySlider(); // 기존 슬라이더가 존재하는 경우 파괴합니다.
+	             	    }
+	             	    // 새로운 슬라이더를 생성하고 인스턴스를 저장합니다.
+	             	    slider = $('#bxslider').bxSlider({
+	             	        minSlides: 2,
+	             	        maxSlides: 100,
+	             	        moveSlides: 1,
+	             	        slideWidth: 300,
+	             	        slideMargin: 2,
+	             	        mode: 'horizontal',
+	             	        auto: true,
+	             	        pause: 3000,
+	             	        speed: 1000
+	             	    });
+	             	    console.log(slider);
+	             	}, 500);
+
+        	},
+        	error: function(error) {
+        		console.log(error);
+        	}
+    	});
+    }
 
 	$(document).ready(function(){
 		// 회원가입 후 modal 표시
@@ -84,6 +163,8 @@ font-family:'SUITE-Regular';
 		
 		$(".hex_value").text(rgbToHex(r, g, b));
 		$("#hexVal").val(rgbToHex(r, g, b));
+		
+		
 	});
 </script>
 <title>EasyTerior</title>
@@ -122,8 +203,15 @@ font-family:'SUITE-Regular';
 					<input type="hidden" id="memID" name="memID" value="${memResult.memID}" />
 					<button type="button" onclick="chkLoginUser()" class="btn btn-primary d-inline-block m-auto ps-2 fw-bold">변경된 사진 저장</button>
 					<button type="button" onclick="window.location.href='${ contextPath }/colorChange.do'" class="btn btn-warning d-inline-block m-auto ps-2 fw-bold">다시 하기</button>
-					
 				</form>
+			</div>
+			<div class="row m-auto mt-5 text-center">
+				<div calss="col">
+					<p class="pline">이 스타일과 관련된 인테리어 아이템을 추천해드릴게요!</p>
+					<div>
+						<div id="bxslider"></div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>

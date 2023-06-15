@@ -369,7 +369,7 @@ public class StyleController {
 
 					System.out.println("\n\nSuccessful jsonResponse");
 //					System.out.println("img_data : "+img_data);
-//					System.out.println("naver_urls : "+naver_urls);
+					System.out.println("naver_urls : "+naver_urls);
 //					System.out.println("final_img : "+final_img);
 //					System.out.println("original_img : "+original_img);
 //					System.out.println("real_color : "+real_color);
